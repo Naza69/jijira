@@ -1,0 +1,46 @@
+.cardSprintAsaidContenedor {
+    background-color: rgb(127, 255, 176);
+    border-radius: 15px;
+    box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
+}
+
+
+
+.botonCardVerSprint,
+.botonCardEditarSprint,
+.botonCardEliminarSprint {
+    height: 30px;
+    width: 30px;
+    border-radius: 20px;
+    border: none;
+    margin: 5px;
+}
+
+.botonCardVerSprint,
+.botonCardEditarSprint {
+    background-color: rgb(54, 220, 241);
+}
+
+.botonCardVerSprint:hover,
+.botonCardEditarSprint:hover {
+    background-color: rgb(45, 179, 197);
+    cursor: pointer;
+}
+
+.botonCardVerSprint:active,
+.botonCardEditarSprint:active {
+    background-color: rgb(36, 145, 160);
+    cursor: pointer;
+}
+
+.botonCardEliminarSprint {
+    background-color: rgb(255, 0, 0);
+}
+
+.botonCardEliminarSprint:hover {
+    background-color: rgb(212, 0, 0);
+}
+
+.botonCardEliminarSprint:active {
+    background-color: rgb(167, 2, 2);
+}
