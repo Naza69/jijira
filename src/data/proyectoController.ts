@@ -44,3 +44,17 @@ export const updateTareaController = async (updatedTarea: ITarea) => {
 		console.error("Error en updateTareaController:", error);
 	}
 };
+
+export const deleteTareaController = async (idDeletedTarea: string) => {
+	try {
+		const tareasDB = await getTareaController()
+		if(tareasDB) {
+			const updatedTareas = tareasDB.filter((tarea) => tarea.id !== idDeletedTarea)
+			await backlogPut(updatedTareas)
+		}
+		
+
+	} catch (error) {
+		console.error("Error en deleteTareaController", error)
+	}
+}

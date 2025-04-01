@@ -1,27 +1,5 @@
 {
-    "proyectosList": {
-        "proyectos": [
-            {
-                "id": "aksjdbaksjdbaks",
-                "nombre": "Project zomboid",
-                "descripcion": "Este es un proyecto de ejemplo",
-                "fechaInicio": "2025-3-31",
-                "fechaFin": "2025-06-30",
-                "miembros": [ 
-                    { 
-                        "id": "akjsbdkasbdkajbsdkjabskdjab",
-                        "nombre": "Piers Rideout",
-                        "rol": "Desarolllador"
-                    },
-                    {
-                        
-                        "id": "sadjdaskjabskdjab",
-                        "nombre": "Ramiro Ferrari",
-                        "rol": "Programador"
-                    }
-
-                ]
-            }
-        ]
-    }
+  "proyectosList": {
+    "tareas": []
+  }
 }

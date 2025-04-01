@@ -4,9 +4,11 @@ import { ITarea } from '../types/ITarea'
 interface ITareaStore {
 
   tareas: ITarea[]
+  activeTarea: ITarea | null
   tareaPendiente: ITarea | null
   tareaEnProgreso: ITarea | null
   tareaCompletada: ITarea | null
+  setActiveTarea: (tarea: ITarea | null) => void
   setTareaPendiente: (tareaPendiente: ITarea | null) => void
   setTareaEnProgeso: (tareaEnProgeso: ITarea | null) => void
   setTareaCompletada: (tareaCompletada: ITarea | null) => void
@@ -18,6 +20,7 @@ interface ITareaStore {
 }
 export const TareaStore = create<ITareaStore>((set) => ({
   tareas: [],
+  activeTarea: null,
   tareaPendiente: null,
   tareaEnProgreso: null,
   tareaCompletada: null,
@@ -25,6 +28,7 @@ export const TareaStore = create<ITareaStore>((set) => ({
   setArrayTareas: (arrayDeTareas) => set(() => ({tareas: arrayDeTareas})),
 
   addNewTarea: (newTarea) => set((state) => ({tareas: [... state.tareas, newTarea]})),
+  setActiveTarea: (activeTareaIn) => set(() => ({ activeTarea: activeTareaIn })),
   
   editTarea: (editedTarea) => 
     set((state) => {
