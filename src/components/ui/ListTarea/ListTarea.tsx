@@ -5,11 +5,12 @@ import { TareaStore } from '../../../store/TareaStore'
 import { useEffect, useState } from 'react'
 import { useTarea } from '../../hooks/useTarea'
 import { CardTarea } from '../cardTarea/CardTarea'
+import styles from './ListTarea.module.css';
 
 export const ListTarea = () => {
-    const setActiveTarea = TareaStore((state) => state.setActiveTarea)    
-    const {getTareas} = useTarea(); 
-    const {tareas} = useTarea();
+    const setActiveTarea = TareaStore((state) => state.setActiveTarea)
+    const { getTareas } = useTarea();
+    const { tareas } = useTarea();
 
 
     useEffect(() => {
@@ -20,38 +21,50 @@ export const ListTarea = () => {
     const [openViewModalTask, setOpenViewModalTarea] = useState(false);
 
     const handleOpenViewTask = (tarea: ITarea) => {
-		setActiveTarea(tarea);
-		setOpenViewModalTarea(true);
-	};
+        setActiveTarea(tarea);
+        setOpenViewModalTarea(true);
+    };
 
     const handleCloseCrearTareaModal = () => {
         setOpenModalTarea(false)
         setActiveTarea(null)
     }
-    return ( 
-        <div >
-            <div>
-                <div >
-                    <div >Backlog</div>
-                    <button onClick={() => {setOpenModalTarea(true)}}>Crear tarea</button>
-                    <button >Tareas</button>
-                </div> 
-            <div>Tareas en el backlog</div>
-        </div>
-            {tareas.length > 0 ? (
-                tareas.map((el) => (
-                    <CardTarea tarea={el} 
-                        key={el.id}
-                    />
-                ))
-            ) : (
+
+    const handleOpenModalEdit = (tarea: ITarea) => {
+        setActiveTarea(tarea);
+        setOpenModalTarea(true);
+    };
+
+    return (
+        <div className={openModalTarea ? styles.blurredBackground : ''}>
+            <div className={styles.ListTareaEstiloGeneral}>
                 <div>
-                    <h3>No hay tareas loco</h3>
+                    <div className={styles.tituloBoton}>
+                        <div>Backlog</div>
+                        <button onClick={() => setOpenModalTarea(true)}>Crear tarea</button>
+                    </div>
+                    <div>Tareas en el backlog</div>
                 </div>
-            )} 
-            {openModalTarea && (
-				<CrearTareaModal modalClass="formularioModal nuevaClase" handleCloseCrearTareaModal={handleCloseCrearTareaModal} />
-			)}
+                {tareas.length > 0 ? (
+                    tareas.map((el) => (
+                        <CardTarea
+                            tarea={el}
+                            key={el.id}
+                            handleOpenModalEdit={handleOpenModalEdit}
+                        />
+                    ))
+                ) : (
+                    <div>
+                        <h3>No hay tareas</h3>
+                    </div>
+                )}
+                {openModalTarea && (
+                    <CrearTareaModal
+                        modalClass="formularioModal nuevaClase"
+                        handleCloseCrearTareaModal={handleCloseCrearTareaModal}
+                    />
+                )}
+            </div>
         </div>
     )
 }
