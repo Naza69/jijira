@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { useTarea } from '../../hooks/useTarea'
 import { CardTarea } from '../cardTarea/CardTarea'
 import styles from './ListTarea.module.css';
+import { VerTareaModal } from '../modals/VerTareaModal/VerTareaModal'
 
 export const ListTarea = () => {
     const setActiveTarea = TareaStore((state) => state.setActiveTarea)
@@ -20,7 +21,7 @@ export const ListTarea = () => {
     const [openModalTarea, setOpenModalTarea] = useState(false)
     const [openViewModalTask, setOpenViewModalTarea] = useState(false);
 
-    const handleOpenViewTask = (tarea: ITarea) => {
+    const handleOpenViewTarea = (tarea: ITarea) => {
         setActiveTarea(tarea);
         setOpenViewModalTarea(true);
     };
@@ -30,10 +31,14 @@ export const ListTarea = () => {
         setActiveTarea(null)
     }
 
-    const handleOpenModalEdit = (tarea: ITarea) => {
+    const handleOpenModalEditTarea = (tarea: ITarea) => {
         setActiveTarea(tarea);
         setOpenModalTarea(true);
     };
+
+    const handleCloseVerTareaModal = () => {
+		setOpenViewModalTarea(false);
+	}
 
     return (
         <div className={openModalTarea ? styles.blurredBackground : ''}>
@@ -50,7 +55,8 @@ export const ListTarea = () => {
                         <CardTarea
                             tarea={el}
                             key={el.id}
-                            handleOpenModalEdit={handleOpenModalEdit}
+                            handleOpenModalEdit={handleOpenModalEditTarea}
+                            handleOpenModalView={handleOpenViewTarea}
                         />
                     ))
                 ) : (
@@ -64,6 +70,11 @@ export const ListTarea = () => {
                         handleCloseCrearTareaModal={handleCloseCrearTareaModal}
                     />
                 )}
+                {openViewModalTask && (
+				    <VerTareaModal 
+                    modalClass='verModal nuevaClase' 
+                    handleCloseVerTareaModal={handleCloseVerTareaModal} />
+			    )}
             </div>
         </div>
     )

@@ -6,11 +6,11 @@ import { useTarea } from '../../hooks/useTarea'
 type CardTareaProps = {
   tarea: ITarea;
   handleOpenModalEdit: (tarea: ITarea) => void
-  //handleOpenView: (tarea: ITarea) => void
+  handleOpenModalView: (tarea: ITarea) => void
 }
 
 
-export const CardTarea: FC<CardTareaProps> = ({ tarea }) => {
+export const CardTarea: FC<CardTareaProps> = ({ tarea, handleOpenModalEdit, handleOpenModalView }) => {
   const { deleteExistingTarea } = useTarea()
   const { updateExistingTarea } = useTarea()
 
@@ -19,12 +19,12 @@ export const CardTarea: FC<CardTareaProps> = ({ tarea }) => {
   }
 
   const handleEditTarea = () => {
-    updateExistingTarea(tarea)
+    handleOpenModalEdit(tarea)
   }
 
-  // const handleViewTarea = () => {
-  //   handleOpenView(tarea)
-  // }
+  const handleVerTarea = () => {
+    handleOpenModalView(tarea)
+  }
 
 
   return (
@@ -40,8 +40,8 @@ export const CardTarea: FC<CardTareaProps> = ({ tarea }) => {
       <div>
         <button>Agregar a</button>
         <select name="" id=""></select>
-        <button >O</button>
-        <button onClick={() => handleEditTarea}>I</button>
+        <button onClick={handleVerTarea}>O</button>
+        <button onClick={handleEditTarea}>I</button>
         <button onClick={handleDeleteTarea}>E</button>
       </div>
     </div>
