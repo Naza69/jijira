@@ -4,7 +4,6 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "bdDev": " npx json-server --watch db.json  --port 3000",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
