@@ -17,35 +17,36 @@ const initialState: ITarea = {
 };
 
 
-export const VerTareaModal : FC<VerTareaModalProps> = ({ modalClass, handleCloseVerTareaModal }) => {
-  const activeTarea = TareaStore((state) => state.activeTarea);
-	const setActiveTask = TareaStore((state) => state.setActiveTarea);
+export const VerTareaModal: FC<VerTareaModalProps> = ({ modalClass, handleCloseVerTareaModal }) => {
+    const activeTarea = TareaStore((state) => state.activeTarea);
+    const setActiveTask = TareaStore((state) => state.setActiveTarea);
 
-	const handleClose = () => {
-		setActiveTask(null);
-		handleCloseVerTareaModal(); };
+    const handleClose = () => {
+        setActiveTask(null);
+        handleCloseVerTareaModal();
+    };
 
-  return (
-    <>
-        <div className={`${styles.containerModal} ${modalClass}`} >
-            
+    return (
+        <>
+            <div className={`${styles.containerModal} ${modalClass}`} >
+
                 <div className={styles.tituloModal}>
                     <h2>{activeTarea?.titulo}</h2>
                 </div>
                 <div className={styles.inputFormulario}>
-                    <p >{activeTarea?.descripcion} </p>
-
+                    <label>Descripción:</label>
+                    <p>{activeTarea?.descripcion}</p>
                 </div>
                 <div className={styles.inputFormulario}>
-                    <p >{activeTarea?.fechaLimite}</p>
-
+                    <label>Fecha Límite:</label>
+                    <p>{activeTarea?.fechaLimite}</p>
                 </div>
                 <div className={styles.botonesModal}>
                     <Button variant="danger" onClick={handleClose}>
                         Cerrar
                     </Button>
                 </div>
-        </div>
-    </>
-  )
+            </div>
+        </>
+    )
 }
