@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "bdDev": " npx json-server --watch db.json  --port 3000",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
@@ -16,6 +17,7 @@
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.9",
     "react-dom": "^19.0.0",
+    "react-router-dom": "^7.5.0",
     "sweetalert2": "^11.17.2",
     "zustand": "^5.0.3"
   },
