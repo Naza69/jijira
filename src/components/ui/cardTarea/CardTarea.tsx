@@ -30,11 +30,9 @@ export const CardTarea: FC<CardTareaProps> = ({ tarea, handleOpenModalEdit, hand
   return (
     <div className={styles.cardElemContainer}>
       <div>
-        <p>
           <p>{tarea.titulo}</p>
           <p>{tarea.descripcion}</p>
           <p>{tarea.fechaLimite}</p>
-        </p>
 
       </div>
       <div>

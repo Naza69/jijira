@@ -1,14 +1,17 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { useAppStore } from '../../store/SprintStore';
 import { TaskCard } from '../ui/TaskCard/TaskCard';
+import { CrearSprintModal } from '../modals/CrearSprint/CrearSprintModal';
 
 export function NuevaPantalla() {
     const openModal = useAppStore((state) => state.openModal);
     const setOpenModal = useAppStore((state) => state.setOpenModal);
     const selectedSprint = useAppStore((state) => state.selectedSprint);
     const tasks = useAppStore((state) => state.tasks);
+
+    
 
     useEffect(() => {
         if (openModal) {
@@ -18,9 +21,7 @@ export function NuevaPantalla() {
         }
     }, [openModal]);
 
-    const handleOpenModal = (modalName: string) => {
-        setOpenModal(modalName);
-    };
+
 
     return (
         <>
@@ -34,7 +35,6 @@ export function NuevaPantalla() {
                                     <h3>Tareas en la Sprint</h3>
                                     <button
                                         className="botonCrearTarea"
-                                        onClick={() => handleOpenModal('crearTarea')}
                                     >
                                         Crear Tarea
                                     </button>

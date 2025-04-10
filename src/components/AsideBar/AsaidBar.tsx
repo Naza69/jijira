@@ -1,16 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import "./AsaidBarEstilo.css";
 import { CardSprintAsaid } from './cardSprintAsaid/CardSprintAsaid';
 import { useAppStore } from '../../store/store';
 import addBoxIcon from '../icons/add_box.svg';
+import { CrearSprintModal } from '../modals/CrearSprint/CrearSprintModal';
 
 export const AsaidBar = () => {
     const sprints = useAppStore((state) => state.sprints);
     const setOpenModal = useAppStore((state) => state.setOpenModal);
+    const [openModalSprint, setOpenModalSprint] = useState(false);
 
-    const handleOpenModal = () => {
-        setOpenModal('crearSprint');
+    const handleOpenModal = (modalName: string) => {
+        setOpenModal(modalName);
     };
+    const handleCloseCrearSprintModal = () => {
+        setOpenModalSprint(false)
+    }
 
     return (
         <div className='asideBarContenedor'>
@@ -22,7 +27,7 @@ export const AsaidBar = () => {
             <div className='divListaSprints'>
                 <div className="headerListaSprints">
                     <h4>Lista de Sprints</h4>
-                    <button className="botonCrearSprint" onClick={handleOpenModal}>
+                    <button className="botonCrearSprint" onClick={() => setOpenModalSprint(true)}>
                         <img src={addBoxIcon} alt="Crear Sprint" className="iconoCrearSprint" />
                     </button>
                 </div>
@@ -32,6 +37,21 @@ export const AsaidBar = () => {
                     sprints.map((sprint) => (
                         <CardSprintAsaid key={sprint.id} sprint={sprint} />
                     ))
+                )}
+                {openModalSprint && (
+                    (() => {
+                        try {
+                            return (
+                                <CrearSprintModal
+                                    modalClass="formularioModal nuevaClase"
+                                    onClose={handleCloseCrearSprintModal}
+                                />
+                            );
+                        } catch (error) {
+                            console.error("Error al renderizar CrearSprintModal:", error);
+                            return <p>Ocurrió un error al cargar el modal.</p>;
+                        }
+                    })()
                 )}
             </div>
         </div>
