@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { ISprint } from '../components/types/ISprint';
+import { ISprint } from '../types/ISprint';
+import { ITarea } from '../types/ITarea';
 
 export type Task = {
     id: number;
@@ -10,21 +11,34 @@ export type Task = {
 };
 
 export type AppState = {
+    // Modal management
     openModal: string | null;
     setOpenModal: (modalName: string | null) => void;
+
+    // Sprint management
     sprints: ISprint[];
     addSprint: (sprint: ISprint) => void;
-    updateSprint: (updatedSprint: ISprint) => void; // Acción para actualizar un sprint
+    updateSprint: (updatedSprint: ISprint) => void;
     selectedSprint: ISprint | null;
     setSelectedSprint: (sprint: ISprint | null) => void;
-    removeSprint: (sprintId: number) => void;
-    tasks: Task[];
-    addTask: (task: Task) => void;
+    removeSprint: (sprintId: string) => void;
+
+    // Task management
+    tareas: ITarea[];
+    activeTarea: ITarea | null;
+    setActiveTarea: (tarea: ITarea | null) => void;
+    setArrayTareas: (arrayDeTareas: ITarea[]) => void;
+    addNewTarea: (tarea: ITarea) => void;
+    editTarea: (updatedTarea: ITarea) => void;
+    deleteTarea: (idTarea: string) => void;
 };
 
 export const useAppStore = create<AppState>((set) => ({
+    // Modal management
     openModal: null,
     setOpenModal: (modalName) => set({ openModal: modalName }),
+
+    // Sprint management
     sprints: [],
     addSprint: (sprint) =>
         set((state) => ({
@@ -35,18 +49,30 @@ export const useAppStore = create<AppState>((set) => ({
             sprints: state.sprints.map((sprint) =>
                 sprint.id === updatedSprint.id ? updatedSprint : sprint
             ),
-        })), // Actualiza el sprint en la lista
+        })),
     selectedSprint: null,
     setSelectedSprint: (sprint) => set({ selectedSprint: sprint }),
     removeSprint: (sprintId) =>
         set((state) => ({
             sprints: state.sprints.filter((sprint) => sprint.id !== sprintId),
-    
         })),
-    tasks: [],
-    addTask: (task) =>
+
+    // Task management
+    tareas: [],
+    activeTarea: null,
+    setActiveTarea: (tarea) => set(() => ({ activeTarea: tarea })),
+    setArrayTareas: (arrayDeTareas) => set(() => ({ tareas: arrayDeTareas })),
+    addNewTarea: (newTarea) =>
+        set((state) => ({ tareas: [...state.tareas, newTarea] })),
+    editTarea: (editedTarea) =>
         set((state) => ({
-            tasks: [...state.tasks, task],
+            tareas: state.tareas.map((tarea) =>
+                tarea.id === editedTarea.id ? { ...tarea, ...editedTarea } : tarea
+            ),
+        })),
+    deleteTarea: (idTarea) =>
+        set((state) => ({
+            tareas: state.tareas.filter((tarea) => tarea.id !== idTarea),
         })),
 }));
 

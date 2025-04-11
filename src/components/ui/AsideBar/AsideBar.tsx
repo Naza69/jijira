@@ -1,16 +1,16 @@
-import React, { useEffect } from 'react'
+import React, { useEffect } from 'react';
 import "./AsaidBarEstilo.css";
-import { useNavigate } from 'react-router-dom'
-import { useAppStore } from '../../../store/SprintStore';
+import { useNavigate } from 'react-router-dom';
+import { useAppStore } from '../../../store/store';
 import addBoxIcon from '../../icons/add_box.svg';
 import { CardSprintAsaid } from '../CardSprintAsaid/CardSprintAsaid';
-
+import { CrearSprintModal } from '../modals/CrearSprint/CrearSprintModal';
 
 export const AsaidBar = () => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const sprints = useAppStore((state) => state.sprints);
-    const setOpenModal = useAppStore((state) => state.setOpenModal);
     const openModal = useAppStore((state) => state.openModal);
+    const setOpenModal = useAppStore((state) => state.setOpenModal);
 
     useEffect(() => {
         if (openModal) {
@@ -19,10 +19,14 @@ export const AsaidBar = () => {
             document.body.classList.remove('overflow-hidden');
         }
     }, [openModal]);
-    const handleOpenModal = () => {
-        setOpenModal('crearSprint');
+
+    const handleOpenCrearSprintModal = () => {
+        setOpenModal('crearSprint'); // Cambia el estado global `openModal` a 'crearSprint'
     };
 
+    const handleCloseModal = () => {
+        setOpenModal(null);
+    };
 
     return (
         <div className='asideBarContenedor'>
@@ -34,7 +38,7 @@ export const AsaidBar = () => {
             <div className='divListaSprints'>
                 <div className="headerListaSprints">
                     <h4>Lista de Sprints</h4>
-                    <button className="botonCrearSprint" onClick={handleOpenModal}>
+                    <button className="botonCrearSprint" onClick={handleOpenCrearSprintModal}>
                         <img src={addBoxIcon} alt="Crear Sprint" className="iconoCrearSprint" />
                     </button>
                 </div>
@@ -47,7 +51,12 @@ export const AsaidBar = () => {
                 )}
             </div>
             {openModal === 'crearSprint' && (
-                <CrearSprintModal modalClass="formularioModal nuevaClase" onClose={handleCloseModal} />
+                <div className="modalOverlay">
+                    <CrearSprintModal
+                        modalClass="formularioModal nuevaClase"
+                        onClose={handleCloseModal} // Cierra el modal al cambiar el estado `openModal` a `null`
+                    />
+                </div>
             )}
         </div>
     );

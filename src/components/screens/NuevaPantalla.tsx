@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import "./SprintsEstilo.css"
 import { useAppStore } from '../../store/SprintStore';
 import { TaskCard } from '../ui/TaskCard/TaskCard';
-import { CrearSprintModal } from '../modals/CrearSprint/CrearSprintModal';
+import { CrearSprintModal } from '../ui/modals/CrearSprint/CrearSprintModal';
 
 export function NuevaPantalla() {
     const openModal = useAppStore((state) => state.openModal);
@@ -11,7 +11,7 @@ export function NuevaPantalla() {
     const selectedSprint = useAppStore((state) => state.selectedSprint);
     const tasks = useAppStore((state) => state.tasks);
 
-    
+
 
     useEffect(() => {
         if (openModal) {
@@ -25,42 +25,40 @@ export function NuevaPantalla() {
 
     return (
         <>
-            <div className={`parent ${openModal ? 'blur-background' : ''}`}>
-                <div className="pantallaPrincipal">
-                    {selectedSprint ? (
-                        <div className="sprintDetails">
-                            <div className="headerSprintDetails">
-                                <h2>Nombre de la Sprint: {selectedSprint.nombre}</h2>
-                                <div className="crearTareaContainer">
-                                    <h3>Tareas en la Sprint</h3>
-                                    <button
-                                        className="botonCrearTarea"
-                                    >
-                                        Crear Tarea
-                                    </button>
-                                </div>
-                            </div>
-                            <div className="columnsContainer">
-                                <div className="column pendiente">
-                                    <h4>Pendiente</h4>
-                                    {tasks
-                                        .filter((task) => task.status === 'pendiente')
-                                        .map((task) => (
-                                            <TaskCard key={task.id} task={task} />
-                                        ))}
-                                </div>
-                                <div className="column enProgreso">
-                                    <h4>En progreso</h4>
-                                </div>
-                                <div className="column completado">
-                                    <h4>Completado</h4>
-                                </div>
+            <div className="pantallaPrincipal">
+                {selectedSprint ? (
+                    <div className="sprintDetails">
+                        <div className="headerSprintDetails">
+                            <h2>Nombre de la Sprint: {selectedSprint.title}</h2>
+                            <div className="crearTareaContainer">
+                                <h3>Tareas en la Sprint</h3>
+                                <button
+                                    className="botonCrearTarea"
+                                >
+                                    Crear Tarea
+                                </button>
                             </div>
                         </div>
-                    ) : (
-                        <p>Selecciona una Sprint para ver los detalles.</p>
-                    )}
-                </div>
+                        <div className="columnsContainer">
+                            <div className="column pendiente">
+                                <h4>Pendiente</h4>
+                                {tasks
+                                    .filter((task) => task.status === 'pendiente')
+                                    .map((task) => (
+                                        <TaskCard key={task.id} task={task} />
+                                    ))}
+                            </div>
+                            <div className="column enProgreso">
+                                <h4>En progreso</h4>
+                            </div>
+                            <div className="column completado">
+                                <h4>Completado</h4>
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <p>Selecciona una Sprint para ver los detalles.</p>
+                )}
             </div>
         </>
     );

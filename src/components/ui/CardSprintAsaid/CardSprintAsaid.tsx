@@ -22,7 +22,7 @@ export const CardSprintAsaid = ({ sprint }: { sprint: ISprint }) => {
     };
 
     const handleDeleteSprint = () => {
-        if (window.confirm(`¿Estás seguro de que deseas eliminar el Sprint "${sprint.nombre}"?`)) {
+        if (window.confirm(`¿Estás seguro de que deseas eliminar el Sprint "${sprint.title}"?`)) {
             removeSprint(Number(sprint.id)); // Elimina el Sprint
         }
     };
@@ -37,9 +37,9 @@ export const CardSprintAsaid = ({ sprint }: { sprint: ISprint }) => {
             onClick={handleSelectSprint} // Agrega el evento onClick al contenedor principal
         >
             <div>
-                <h5>{sprint.nombre}</h5>
-                <h6>Inicio: {sprint.fechaInicio.toLocaleDateString()}</h6>
-                <h6>Fin: {sprint.fechaCierre.toLocaleDateString()}</h6>
+                <h5>{sprint.title}</h5>
+                <h6>Inicio: {new Date(sprint.startDate).toLocaleDateString()}</h6>
+                <h6>Fin: {new Date(sprint.endDate).toLocaleDateString()}</h6>
             </div>
             <div className="botoneraCardSprint" onClick={(e) => e.stopPropagation() /* HACE QUE SELECCIONE EL SPRINT AL HACER CLICK EN EL CUADRO EN UN AREA CUALQUIERA. NO BORRAR MUY IMPORTANTE*/}>
                 <button className="botonCardVerSprint" onClick={handleViewSprint}>
