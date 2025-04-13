@@ -17,11 +17,12 @@ export type AppState = {
 
     // Sprint management
     sprints: ISprint[];
-    addSprint: (sprint: ISprint) => void;
-    updateSprint: (updatedSprint: ISprint) => void;
     selectedSprint: ISprint | null;
     setSelectedSprint: (sprint: ISprint | null) => void;
-    removeSprint: (sprintId: string) => void;
+    setArraySprints: (sprints: ISprint[]) => void;
+    addSprint: (sprint: ISprint) => void;
+    updateSprint: (sprint: ISprint) => void;
+    removeSprint: (id: string) => void;
 
     // Task management
     tareas: ITarea[];
@@ -40,6 +41,7 @@ export const useAppStore = create<AppState>((set) => ({
 
     // Sprint management
     sprints: [],
+    setArraySprints: (sprints) => set(() => ({ sprints })),
     addSprint: (sprint) =>
         set((state) => ({
             sprints: [...state.sprints, sprint],

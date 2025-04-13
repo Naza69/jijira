@@ -3,6 +3,7 @@ import { useAppStore } from '../../../../store/store';
 import { ISprint } from '../../../../types/ISprint';
 import styles from "../CrearTareaModal/CrearTareaModal.module.css";
 import Button from 'react-bootstrap/Button';
+import { useSprint } from '../../../hooks/useSprint';
 
 export const CrearSprintModal = ({ modalClass, onClose }: { modalClass: string; onClose: () => void }) => {
     const addSprint = useAppStore((state) => state.addSprint);
@@ -10,6 +11,8 @@ export const CrearSprintModal = ({ modalClass, onClose }: { modalClass: string; 
     const [description, setDescription] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+
+    const { addNewSprint } = useSprint();
 
     const handleSubmit = () => {
         if (title && description && startDate && endDate) {
@@ -19,8 +22,10 @@ export const CrearSprintModal = ({ modalClass, onClose }: { modalClass: string; 
                 description,
                 startDate,
                 endDate,
+                tareas: [],
             };
             addSprint(newSprint);
+            addNewSprint(newSprint);
             onClose();
         } else {
             alert('Por favor, completa todos los campos.');

@@ -64,7 +64,6 @@ export const useTarea = () => {
                     deleteTarea(idTareaToDelete)
                     try {
                         await deleteTareaController(idTareaToDelete);
-
                     } catch (error) {
                         addTarea(previuosTarea)
                         console.error("Hubo un error en deleteExistingTarea", error)

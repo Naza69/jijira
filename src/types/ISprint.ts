@@ -6,4 +6,5 @@ export interface ISprint {
     description: string;
     startDate: string;
     endDate: string;
+    tareas: ITarea[];
 }

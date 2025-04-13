@@ -37,8 +37,8 @@ export const ListTarea = () => {
     };
 
     const handleCloseVerTareaModal = () => {
-		setOpenViewModalTarea(false);
-	}
+        setOpenViewModalTarea(false);
+    }
 
     return (
         <div className={openModalTarea ? styles.blurredBackground : ''}>
@@ -71,10 +71,10 @@ export const ListTarea = () => {
                     />
                 )}
                 {openViewModalTask && (
-				    <VerTareaModal 
-                    modalClass='verModal nuevaClase' 
-                    handleCloseVerTareaModal={handleCloseVerTareaModal} />
-			    )}
+                    <VerTareaModal
+                        modalClass='verModal nuevaClase'
+                        handleCloseVerTareaModal={handleCloseVerTareaModal} />
+                )}
             </div>
         </div>
     )
