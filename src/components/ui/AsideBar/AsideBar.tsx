@@ -5,12 +5,15 @@ import { useAppStore } from '../../../store/store';
 import addBoxIcon from '../../icons/add_box.svg';
 import { CardSprintAsaid } from '../CardSprintAsaid/CardSprintAsaid';
 import { CrearSprintModal } from '../modals/CrearSprint/CrearSprintModal';
+import { VerSprintModal } from '../modals/VerSprintModal/VerSprintModal';
+import { ISprint } from '../../../types/ISprint';
 
 export const AsaidBar = () => {
     const navigate = useNavigate();
     const sprints = useAppStore((state) => state.sprints);
     const openModal = useAppStore((state) => state.openModal);
     const setOpenModal = useAppStore((state) => state.setOpenModal);
+    const setSelectedSprint = useAppStore((state) => state.setSelectedSprint);
 
     useEffect(() => {
         if (openModal) {
@@ -24,8 +27,19 @@ export const AsaidBar = () => {
         setOpenModal('crearSprint'); // Cambia el estado global `openModal` a 'crearSprint'
     };
 
+    const handleOpenModalEditSprints = (sprint: ISprint) => {
+        setSelectedSprint(sprint);
+        setOpenModal("crearSprint");
+    };
+
+    const handleOpenModalVerSprints = (sprint: ISprint) => {
+        setSelectedSprint(sprint);
+        setOpenModal("verSprint");
+    };
+
     const handleCloseModal = () => {
         setOpenModal(null);
+        setSelectedSprint(null);
     };
 
     return (
@@ -46,7 +60,12 @@ export const AsaidBar = () => {
                     <p>No hay sprints creados.</p>
                 ) : (
                     sprints.map((sprint) => (
-                        <CardSprintAsaid key={sprint.id} sprint={sprint} />
+                        <CardSprintAsaid
+                            key={sprint.id}
+                            sprint={sprint}
+                            handleOpenModalEditSprints={handleOpenModalEditSprints}
+                            handleOpenModalVerSprints={handleOpenModalVerSprints} // Pasa la función para cerrar el modal
+                        />
                     ))
                 )}
             </div>
@@ -55,6 +74,14 @@ export const AsaidBar = () => {
                     <CrearSprintModal
                         modalClass="formularioModal nuevaClase"
                         onClose={handleCloseModal} // Cierra el modal al cambiar el estado `openModal` a `null`
+                    />
+                </div>
+            )}
+            {openModal === "verSprint" && (
+                <div className="modalOverlay">
+                    <VerSprintModal
+                        modalClass="formularioModal nuevaClase"
+                        handleCloseVerSprintModal={handleCloseModal} // Cierra el modal al cambiar el estado `openModal` a `null`
                     />
                 </div>
             )}

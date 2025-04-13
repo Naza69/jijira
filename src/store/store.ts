@@ -49,7 +49,7 @@ export const useAppStore = create<AppState>((set) => ({
     updateSprint: (updatedSprint) =>
         set((state) => ({
             sprints: state.sprints.map((sprint) =>
-                sprint.id === updatedSprint.id ? updatedSprint : sprint
+                sprint.id === updatedSprint.id ? { ...sprint, ...updatedSprint } : sprint
             ),
         })),
     selectedSprint: null,

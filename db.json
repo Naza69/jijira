@@ -17,17 +17,19 @@
   ],
   "sprints": [
     {
-      "title": "Sprint 1",
+      "id": "1744555753911",
+      "title": "Sprint 3",
+      "description": "as",
       "startDate": "2023-10-01",
       "endDate": "2023-10-15",
-      "id": "1",
       "tareas": []
     },
     {
-      "title": "Sprint 2",
-      "startDate": "2023-10-16",
-      "endDate": "2023-10-30",
-      "id": "2",
+      "id": "1744561642906",
+      "title": "toroto",
+      "description": "soporo",
+      "startDate": "0002-02-02",
+      "endDate": "0002-02-02",
       "tareas": []
     }
   ]

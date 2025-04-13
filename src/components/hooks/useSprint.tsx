@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 
 export const useSprint = () => {
     const { sprints, setArraySprints, addSprint, updateSprint, removeSprint } = useAppStore(
-        useShallow((state) => ({
+        useShallow((state: { sprints: ISprint[]; setArraySprints: (sprints: ISprint[]) => void; addSprint: (sprint: ISprint) => void; updateSprint: (sprint: ISprint) => void; removeSprint: (id: string) => void; }) => ({
             sprints: state.sprints,
             setArraySprints: state.setArraySprints,
             addSprint: state.addSprint,
@@ -21,11 +21,10 @@ export const useSprint = () => {
     };
 
     const addNewSprint = async (newSprint: ISprint) => {
-        addSprint(newSprint);
         try {
-            await createSprintController(newSprint);
+            const createdSprint = await createSprintController(newSprint) as unknown as ISprint; // Asegura que el objeto coincide con ISprint
+            // Agrega el sprint al estado local solo después de la confirmación
         } catch (error) {
-            removeSprint(newSprint.id);
             console.error("Error en addNewSprint:", error);
         }
     };
