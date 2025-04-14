@@ -10,7 +10,7 @@
 }
 
 
-
+/*estilo general para evitar overflow y ordenar con grid*/
 .parent {
   display: grid;
   grid-template-columns: 250px 1fr 2fr 1fr 200px;
@@ -22,6 +22,7 @@
   overflow: hidden;
 }
 
+/*estilo dle navBar*/
 .navBar {
   grid-area: 1 / 1 / 2 / 6;
   display: flex;
@@ -32,10 +33,12 @@
   height: 60px;
 }
 
+/*estilo del contenedor asaidBar*/
 .asideBar {
   grid-area: 2 / 1 / 6 / 2;
 }
 
+/*estilo del contenedor de la pantalla principal*/
 .pantallaPrincipal {
   grid-area: 2 / 2 / 6 / 6;
   background-color: rgb(202, 202, 202);

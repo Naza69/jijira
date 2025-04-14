@@ -1,5 +1,5 @@
 import React from 'react'
-
+//NavBar de la aplicacion. aun no esta terminado
 export const NavBar = () => {
     return (
         <>
