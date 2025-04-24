@@ -6,12 +6,21 @@ import { TaskCard } from '../ui/TaskCard/TaskCard';
 import { CrearSprintModal } from '../ui/modals/CrearSprint/CrearSprintModal';
 import { CrearTareaModal } from '../ui/modals/CrearTareaModal/CrearTareaModal';
 import { VerTareaModal } from '../ui/modals/VerTareaModal/VerTareaModal';
+import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export function NuevaPantalla() {
     const openModal = useSprintStore((state) => state.openModal);
     const setOpenModal = useSprintStore((state) => state.setOpenModal);
     const selectedSprint = useSprintStore((state) => state.selectedSprint);
     const [openCrearTareaModal, setOpenCrearTareaModal] = useState(false);
+
+    //const selectedSprintTwo = useAppStore((state) => state.selectedSprint)
+    const navigate = useNavigate()
+    const {idSprint} = useParams()
+    console.log(idSprint)
+    const setSelectedSprint = useSprintStore((state) => state.setSelectedSprint)
+    const sprints = useSprintStore((state) => state.sprints)
 
     useEffect(() => {
         if (openModal) {
@@ -21,10 +30,43 @@ export function NuevaPantalla() {
         }
     }, [openModal]);
 
+    //useEffect(() => {
+    //    if(!selectedSprint && idSprint && sprints.length > 0) {
+    //        const sprint = sprints.find((s) => String(s.id) === idSprint)
+    //        if(sprint) {
+    //            setSelectedSprint(sprint)
+    //        }
+    //    }
+    //}, [idSprint, selectedSprint, sprints, setSelectedSprint])
+    
+    useEffect(() => {
+        console.log("Checking for sprint with ID:", idSprint, "in", sprints);
+        const fetchSprint = async () =>{
+            
+        if (idSprint && sprints.length > 0) {
+            console.log("🔄 Buscando sprint con ID:", idSprint);
+            const sprint = sprints.find((s) => String(s.id) === idSprint);
+            console.log(sprint)
+            if (sprint) {
+                console.log("✅ Sprint encontrado:", sprint);
+            
+
+                    setSelectedSprint(sprint);
+                    console.log(selectedSprint) //ACA PUEDE ESTAR EL PROBLEMA
+            } else {
+                console.warn("No sprint encontrado con ese ID");
+            } 
+        }
+        }
+        if (idSprint ){
+            fetchSprint()
+        }
+    }, [idSprint]);
+
     return (
         <>
             <div className="pantallaPrincipal">
-                {selectedSprint ? (
+                {selectedSprint! ? (
                     <div className="sprintDetails">
                         <div className="headerSprintDetails">
                             <h2>Nombre de la Sprint: {selectedSprint.title}</h2>

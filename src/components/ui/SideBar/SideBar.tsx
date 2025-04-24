@@ -9,6 +9,7 @@ import { VerSprintModal } from '../modals/VerSprintModal/VerSprintModal';
 import { ISprint } from '../../../types/ISprint';
 
 export const SideBar = () => {
+
     const navigate = useNavigate();
     const sprints = useSprintStore((state) => state.sprints);
     const openModal = useSprintStore((state) => state.openModal);

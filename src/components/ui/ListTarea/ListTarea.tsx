@@ -1,24 +1,42 @@
 import React from 'react'
 import { CrearTareaModal } from '../modals/CrearTareaModal/CrearTareaModal'
 import { ITarea } from '../../../types/ITarea'
-import { useTareaStore } from '../../../store/store'
+import { useSprintStore, useTareaStore } from '../../../store/store'
 import { useEffect, useState } from 'react'
 import { useTarea } from '../../hooks/useTarea'
 import { CardTarea } from '../cardTarea/CardTarea'
 import styles from './ListTarea.module.css';
 import { VerTareaModal } from '../modals/VerTareaModal/VerTareaModal'
 import { useNavigate } from 'react-router-dom'
+//import { useAppStore } from '../../../store/SprintStore'
 
 export const ListTarea = () => {
     const setActiveTarea = useTareaStore((state) => state.setActiveTarea)
     const { getTareas } = useTarea();
     const { backlog: tareas } = useTarea();
     const navigate = useNavigate();
-
-
+    const addSprint = useSprintStore((state) => state.addSprint)
     useEffect(() => {
         getTareas()
     }, [])
+
+    useEffect(() => {
+    fetch('http://localhost:3000/sprintList')
+      .then(res => {
+        if (!res.ok) throw new Error("Error de red");
+        return res.json();
+      })
+      .then((data) => {
+        const sprints = data.sprints;
+        if (Array.isArray(sprints)) {
+          sprints.forEach(addSprint);
+          console.log("Sprints cargados:", sprints);
+        } else {
+          console.error("La propiedad 'sprints' no es un array");
+        }
+      })
+      .catch(err => console.error("Error cargando sprints:", err));
+    }, [addSprint]);
 
     const [openModalTarea, setOpenModalTarea] = useState(false)
     const [openViewModalTask, setOpenViewModalTarea] = useState(false);
@@ -48,7 +66,7 @@ export const ListTarea = () => {
                 <div className={styles.headerBacklog}>
                     <h1>Pantalla Backlog</h1>
                     <div className={styles.headerActions}>
-                        <button className={styles.btnVolver} onClick={() => navigate('/nueva-pantalla')}>
+                        <button className={styles.btnVolver} onClick={() => navigate(`/nueva-pantalla`)}>
                             Volver a la pantalla principal
                         </button>
                         <button

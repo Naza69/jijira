@@ -7,6 +7,7 @@ import editNoteIcon from '../../icons/edit_note.svg';
 import deleteIcon from '../../icons/delete.svg';
 import Swal from "sweetalert2";
 import { useSprint } from '../../hooks/useSprint';
+import { useNavigate } from 'react-router-dom';
 
 interface CardSprintSideProps {
     sprint: ISprint;
@@ -20,6 +21,7 @@ export const CardSprintSide: React.FC<CardSprintSideProps> = ({ sprint, handleOp
     const isActive = selectedSprint && selectedSprint.id === sprint.id;
     const setOpenModal = useSprintStore((state) => state.setOpenModal);
     const { deleteExistingSprint } = useSprint(); // Usar la función de eliminación del hook
+    const navigate = useNavigate();
 
     const handleViewSprint = () => {
         console.log('Abriendo modal VerSprint:', sprint); // Verifica que el sprint sea el correcto
@@ -52,6 +54,7 @@ export const CardSprintSide: React.FC<CardSprintSideProps> = ({ sprint, handleOp
 
     const handleSelectSprint = () => {
         setSelectedSprint(sprint); // Selecciona el Sprint
+        navigate(`/nueva-pantalla/${sprint.id}`)
     };
 
     return (
