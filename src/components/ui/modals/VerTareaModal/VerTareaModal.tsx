@@ -1,7 +1,7 @@
 import React, { act, FC } from 'react'
 import styles from "./VerTareaModal.module.css"
 import { ITarea } from '../../../../types/ITarea';
-import { TareaStore } from '../../../../store/TareaStore';
+import { useTareaStore } from '../../../../store/store';
 import { Button } from 'react-bootstrap';
 
 type VerTareaModalProps = {
@@ -18,8 +18,8 @@ const initialState: ITarea = {
 
 
 export const VerTareaModal: FC<VerTareaModalProps> = ({ modalClass, handleCloseVerTareaModal }) => {
-    const activeTarea = TareaStore((state) => state.activeTarea);
-    const setActiveTask = TareaStore((state) => state.setActiveTarea);
+    const activeTarea = useTareaStore((state) => state.activeTarea);
+    const setActiveTask = useTareaStore((state) => state.setActiveTarea);
 
     const handleClose = () => {
         setActiveTask(null);

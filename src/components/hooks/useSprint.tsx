@@ -1,31 +1,28 @@
-import { useAppStore } from "../../store/store";
-import { getSprintController, createSprintController, updateSprintController, deleteSprintController } from "../../data/proyectoController";
+import { useSprintStore } from "../../store/store";
+import { getSprintController, createSprintController, updateSprintController, deleteSprintController, updateTareaInSprintController } from "../../data/proyectoController";
 import { ISprint } from "../../types/ISprint";
-import { useShallow } from "zustand/shallow";
+import { ITarea } from "../../types/ITarea";
 import Swal from "sweetalert2";
 
 export const useSprint = () => {
-    const { sprints, setArraySprints, addSprint, updateSprint, removeSprint } = useAppStore(
-        useShallow((state: { sprints: ISprint[]; setArraySprints: (sprints: ISprint[]) => void; addSprint: (sprint: ISprint) => void; updateSprint: (sprint: ISprint) => void; removeSprint: (id: string) => void; }) => ({
-            sprints: state.sprints,
-            setArraySprints: state.setArraySprints,
-            addSprint: state.addSprint,
-            updateSprint: state.updateSprint,
-            removeSprint: state.removeSprint,
-        }))
-    );
+    const sprints = useSprintStore((state) => state.sprints);
+    const setArraySprints = useSprintStore((state) => state.setArraySprints);
+    const addSprint = useSprintStore((state) => state.addSprint);
+    const updateSprint = useSprintStore((state) => state.updateSprint);
+    const removeSprint = useSprintStore((state) => state.removeSprint);
 
     const getSprints = async () => {
         const data = await getSprintController();
         if (data) setArraySprints(data);
     };
 
-    const addNewSprint = async (newSprint: ISprint) => {
+    const addNewSprint = async (newSprint: ISprint): Promise<ISprint> => {
         try {
-            const createdSprint = await createSprintController(newSprint) as unknown as ISprint; // Asegura que el objeto coincide con ISprint
-            // Agrega el sprint al estado local solo después de la confirmación
+            const createdSprint = await createSprintController(newSprint) as unknown as ISprint;
+            return createdSprint; // Devuelve el sprint creado
         } catch (error) {
             console.error("Error en addNewSprint:", error);
+            throw error;
         }
     };
 
@@ -36,9 +33,17 @@ export const useSprint = () => {
             try {
                 await updateSprintController(updatedSprint);
             } catch (error) {
-                updateSprint(previousSprint);
+                updateSprint(previousSprint); // Revertimos al estado anterior
                 console.error("Error en updateExistingSprint:", error);
+                Swal.fire({
+                    title: "Error",
+                    text: "No se pudo actualizar el sprint. Por favor, inténtalo de nuevo.",
+                    icon: "error",
+                    confirmButtonText: "Aceptar",
+                });
             }
+        } else {
+            console.warn("Sprint no encontrado para actualizar.");
         }
     };
 
@@ -68,11 +73,36 @@ export const useSprint = () => {
         });
     };
 
+    const updateTareaInSprint = async (sprintId: string, updatedTarea: ITarea) => {
+        const sprint = sprints.find((s) => s.id === sprintId);
+        if (sprint) {
+            const updatedSprint = {
+                ...sprint,
+                tareas: sprint.tareas.map((t) =>
+                    t.id === updatedTarea.id ? updatedTarea : t
+                ),
+            };
+            updateSprint(updatedSprint); // Actualiza el estado local
+            try {
+                await updateTareaInSprintController(sprintId, updatedTarea); // Actualiza en el servidor
+            } catch (error) {
+                console.error("Error en updateTareaInSprint:", error);
+                Swal.fire({
+                    title: "Error",
+                    text: "No se pudo actualizar la tarea en el servidor.",
+                    icon: "error",
+                    confirmButtonText: "Aceptar",
+                });
+            }
+        }
+    };
+
     return {
         sprints,
         getSprints,
         addNewSprint,
         updateExistingSprint,
         deleteExistingSprint,
+        updateTareaInSprint,
     };
 };

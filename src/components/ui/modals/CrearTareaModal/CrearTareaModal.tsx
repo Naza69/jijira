@@ -1,13 +1,16 @@
 import { ChangeEvent, FC, FormEvent, useEffect, useState } from 'react';
 import styles from "./CrearTareaModal.module.css"; // Importa el archivo CSS como módulo
-import { TareaStore } from '../../../../store/TareaStore';
+import { useTareaStore } from '../../../../store/store';
 import { ITarea } from '../../../../types/ITarea';
 import Button from 'react-bootstrap/Button';
 import { useTarea } from '../../../hooks/useTarea';
+import { useSprintStore } from '../../../../store/store';
+import { useSprint } from '../../../hooks/useSprint';
 
 type CrearTareaModalProps = {
     modalClass: string;
     handleCloseCrearTareaModal: () => void;
+    sprintId?: string;
 };
 
 const initialState: ITarea = {
@@ -17,43 +20,88 @@ const initialState: ITarea = {
     estado: ""
 };
 
-export const CrearTareaModal: FC<CrearTareaModalProps> = ({ modalClass, handleCloseCrearTareaModal }) => {
-    const activeTarea = TareaStore((state) => state.activeTarea);
-    const setActiveTarea = TareaStore((state) => state.setActiveTarea);
+export const CrearTareaModal: FC<CrearTareaModalProps> = ({ modalClass, handleCloseCrearTareaModal, sprintId }) => {
+    const activeTarea = useTareaStore((state) => state.activeTarea);
+    const setActiveTarea = useTareaStore((state) => state.setActiveTarea);
 
     const { updateExistingTarea } = useTarea();
     const { addTarea } = useTarea();
+
+    const sprints = useSprintStore((state) => state.sprints);
+    const setSelectedSprint = useSprintStore((state) => state.setSelectedSprint);
+    const { updateExistingSprint } = useSprint();
 
     const [formValues, setFormValues] = useState(initialState);
 
     useEffect(() => {
         if (activeTarea) {
             setFormValues({
-                id: activeTarea.id,
-                titulo: activeTarea.titulo,
-                descripcion: activeTarea.descripcion,
-                fechaLimite: activeTarea.fechaLimite,
-                estado: activeTarea.estado
+                id: activeTarea.id || "",
+                titulo: activeTarea.titulo || "",
+                descripcion: activeTarea.descripcion || "",
+                fechaLimite: activeTarea.fechaLimite || "",
+                estado: activeTarea.estado || "backlog",
             });
+        } else {
+            setFormValues(initialState); // Reinicia el formulario si no hay tarea activa
         }
-    }, []);
+    }, [activeTarea]);
+
+    useEffect(() => {
+        if (!activeTarea) {
+            setFormValues(initialState); // Limpia el formulario al abrir el modal para una nueva tarea
+        }
+    }, []); // Ejecuta solo al montar el componente
 
     const handleChange = (
         e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
         const { name, value } = e.target;
-        setFormValues((prev) => ({ ...prev, [name]: value }));
+        setFormValues((prev) => ({ ...prev, [name]: value })); // Actualiza el estado correctamente
     };
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        if (activeTarea) {
-            updateExistingTarea(formValues);
-        } else {
-            addTarea({ ...formValues, id: crypto.randomUUID() });
+
+        if (!formValues.titulo.trim() || !formValues.descripcion.trim() || !formValues.fechaLimite.trim()) {
+            alert("Por favor, completa todos los campos correctamente."); // Validación más estricta
+            return;
         }
-        setActiveTarea(null);
-        handleCloseCrearTareaModal();
+
+        const tareaId = activeTarea?.id || Date.now().toString(); // Genera un ID único si no existe
+
+        const nuevaTarea: ITarea = {
+            ...formValues,
+            id: tareaId,
+            estado: sprintId ? "pendiente" : "backlog", // Define el estado según el contexto
+        };
+
+        try {
+            if (sprintId) {
+                const sprint = sprints.find((s: { id: string; tareas: ITarea[] }) => s.id === sprintId);
+                if (sprint) {
+                    const tareasActualizadas = activeTarea
+                        ? sprint.tareas.map((t: ITarea) => (t.id === tareaId ? nuevaTarea : t)) // Editar tarea existente
+                        : [...sprint.tareas, nuevaTarea]; // Agregar nueva tarea
+
+                    const sprintActualizado = { ...sprint, tareas: tareasActualizadas };
+                    await updateExistingSprint(sprintActualizado); // Actualiza el sprint
+                    setSelectedSprint(sprintActualizado);
+                }
+            } else {
+                if (activeTarea) {
+                    await updateExistingTarea(nuevaTarea); // Actualiza tarea en backlog
+                } else {
+                    await addTarea(nuevaTarea); // Agrega nueva tarea al backlog
+                }
+            }
+        } catch (error) {
+            console.error("Error al guardar la tarea:", error);
+            alert("Ocurrió un error al guardar la tarea. Intenta nuevamente.");
+        } finally {
+            setActiveTarea(null); // Limpia la tarea activa
+            handleCloseCrearTareaModal(); // Cierra el modal
+        }
     };
 
     return (

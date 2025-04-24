@@ -19,7 +19,6 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
     overflow-y: auto;
-    /* Habilitar scroll vertical si el contenido excede la altura */
 }
 
 .column h4 {
@@ -47,7 +46,6 @@
     font-size: 24px;
     font-weight: bold;
     color: #333;
-    /* Color más oscuro para contraste */
 }
 
 .crearTareaContainer {
@@ -56,28 +54,23 @@
     align-items: center;
     gap: 10px;
     margin-top: 10px;
-    /* Añadir espacio superior */
 }
 
 .crearTareaContainer h3 {
     font-size: 16px;
     color: #555;
-    /* Color más suave */
 }
 
 .botonCrearTarea {
     height: 32px;
-    /* Botón más grande */
     padding: 5px 15px;
     border: none;
     border-radius: 15px;
-    background-color: #36dcf1;
+    background-color: #b445e7;
     color: white;
     font-size: 14px;
-    /* Fuente más grande */
     cursor: pointer;
     transition: background-color 0.3s ease;
-    /* Animación suave */
 }
 
 .botonCrearTarea:hover {

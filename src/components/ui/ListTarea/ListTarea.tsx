@@ -1,17 +1,19 @@
 import React from 'react'
 import { CrearTareaModal } from '../modals/CrearTareaModal/CrearTareaModal'
 import { ITarea } from '../../../types/ITarea'
-import { TareaStore } from '../../../store/TareaStore'
+import { useTareaStore } from '../../../store/store'
 import { useEffect, useState } from 'react'
 import { useTarea } from '../../hooks/useTarea'
 import { CardTarea } from '../cardTarea/CardTarea'
 import styles from './ListTarea.module.css';
 import { VerTareaModal } from '../modals/VerTareaModal/VerTareaModal'
+import { useNavigate } from 'react-router-dom'
 
 export const ListTarea = () => {
-    const setActiveTarea = TareaStore((state) => state.setActiveTarea)
+    const setActiveTarea = useTareaStore((state) => state.setActiveTarea)
     const { getTareas } = useTarea();
-    const { tareas } = useTarea();
+    const { backlog: tareas } = useTarea();
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -43,14 +45,23 @@ export const ListTarea = () => {
     return (
         <div className={openModalTarea ? styles.blurredBackground : ''}>
             <div className={styles.ListTareaEstiloGeneral}>
-                <div>
-                    <div className={styles.tituloBoton}>
-                        <div>Backlog</div>
-                        <button onClick={() => setOpenModalTarea(true)}>Crear tarea</button>
+                <div className={styles.headerBacklog}>
+                    <h1>Pantalla Backlog</h1>
+                    <div className={styles.headerActions}>
+                        <button className={styles.btnVolver} onClick={() => navigate('/nueva-pantalla')}>
+                            Volver a la pantalla principal
+                        </button>
+                        <button
+                            className={styles.btnCrear}
+                            onClick={() => setOpenModalTarea(true)}
+                        >
+                            Crear tarea y añadirla al backlog
+                        </button>
                     </div>
-                    <div>Tareas en el backlog</div>
+                    <h2>Tareas en el backlog</h2>
                 </div>
-                {tareas.length > 0 ? (
+
+                {Array.isArray(tareas) && tareas.length > 0 ? (
                     tareas.map((el) => (
                         <CardTarea
                             tarea={el}

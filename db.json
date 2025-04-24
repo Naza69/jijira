@@ -1,36 +1,57 @@
 {
-  "tareas": [
-    {
-      "titulo": "asdasd",
-      "descripcion": "asda",
-      "fechaLimite": "0032-02-02",
-      "estado": "",
-      "id": "c6328967-5fad-42e3-b0c1-6da49c1f5272"
-    },
-    {
-      "titulo": "top",
-      "descripcion": "as",
-      "fechaLimite": "0002-02-02",
-      "estado": "",
-      "id": "b0a61d88-caed-4db9-9711-d0827ccbb1a6"
-    }
-  ],
-  "sprints": [
-    {
-      "id": "1744555753911",
-      "title": "Sprint 3",
-      "description": "as",
-      "startDate": "2023-10-01",
-      "endDate": "2023-10-15",
-      "tareas": []
-    },
-    {
-      "id": "1744561642906",
-      "title": "toroto",
-      "description": "soporo",
-      "startDate": "0002-02-02",
-      "endDate": "0002-02-02",
-      "tareas": []
-    }
-  ]
+  "backlog": {
+    "tareas": [
+      {
+        "id": "1745456177354",
+        "titulo": "123",
+        "descripcion": "123",
+        "fechaLimite": "0003-12-12",
+        "estado": "backlog"
+      }
+    ]
+  },
+  "sprintList": {
+    "sprints": [
+      {
+        "id": "1745453985026",
+        "title": "zasds",
+        "description": "ads",
+        "startDate": "0123-03-12",
+        "endDate": "0012-03-12",
+        "tareas": [
+          {
+            "id": "1745456826877",
+            "titulo": "qwesa231",
+            "descripcion": "qwe",
+            "fechaLimite": "0002-03-12",
+            "estado": "en_progreso"
+          }
+        ]
+      },
+      {
+        "id": "1745456186121",
+        "title": "234",
+        "description": "234",
+        "startDate": "0003-04-23",
+        "endDate": "0003-04-23",
+        "tareas": [
+          {
+            "id": "1745456654634",
+            "titulo": "1234895",
+            "descripcion": "123",
+            "fechaLimite": "0123-03-12",
+            "estado": "pendiente"
+          }
+        ]
+      },
+      {
+        "id": "1745463110631",
+        "title": "678",
+        "description": "678",
+        "startDate": "0008-07-06",
+        "endDate": "0008-07-06",
+        "tareas": []
+      }
+    ]
+  }
 }

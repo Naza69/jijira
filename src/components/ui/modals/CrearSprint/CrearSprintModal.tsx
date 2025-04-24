@@ -1,5 +1,5 @@
 import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
-import { useAppStore } from '../../../../store/store';
+import { useSprintStore } from '../../../../store/store'; // Cambiar useAppStore por useSprintStore
 import { ISprint } from '../../../../types/ISprint';
 import styles from "../CrearTareaModal/CrearTareaModal.module.css";
 import Button from 'react-bootstrap/Button';
@@ -16,10 +16,10 @@ const initialState: ISprint = {
 };
 
 export const CrearSprintModal = ({ modalClass, onClose }: { modalClass: string; onClose: () => void }) => {
-    const addSprint = useAppStore((state) => state.addSprint);
-    const updateSprint = useAppStore((state) => state.updateSprint);
-    const setSelectedSprint = useAppStore((state) => state.setSelectedSprint);
-    const selectedSprint = useAppStore((state) => state.selectedSprint);
+    const addSprint = useSprintStore((state) => state.addSprint); // Cambiar useAppStore por useSprintStore
+    const updateSprint = useSprintStore((state) => state.updateSprint); // Cambiar useAppStore por useSprintStore
+    const setSelectedSprint = useSprintStore((state) => state.setSelectedSprint); // Cambiar useAppStore por useSprintStore
+    const selectedSprint = useSprintStore((state) => state.selectedSprint); // Cambiar useAppStore por useSprintStore
 
     const [formValues, setFormValues] = useState(initialState);
 
@@ -34,7 +34,7 @@ export const CrearSprintModal = ({ modalClass, onClose }: { modalClass: string; 
                 tareas: selectedSprint.tareas,
             });
         }
-    }, []);
+    }, [selectedSprint]);
 
     const { addNewSprint } = useSprint();
     const handleChange = (
@@ -57,14 +57,13 @@ export const CrearSprintModal = ({ modalClass, onClose }: { modalClass: string; 
                 startDate,
                 endDate,
             };
-            updateSprint(updatedSprint); // Actualiza el estado local correctamente
             try {
                 await updateSprintController(updatedSprint); // Actualiza en el servidor
+                updateSprint(updatedSprint); // Actualiza el estado local correctamente
             } catch (error) {
                 console.error("Error al actualizar el Sprint:", error);
             }
             setSelectedSprint(null); // Limpia el Sprint seleccionado
-            onClose();
         } else {
             // Creación de un nuevo Sprint
             if (title && description && startDate && endDate) {
@@ -76,17 +75,26 @@ export const CrearSprintModal = ({ modalClass, onClose }: { modalClass: string; 
                     endDate,
                     tareas: [],
                 };
-                addSprint(newSprint); // Agrega al estado local
                 try {
-                    await addNewSprint(newSprint); // Agrega al servidor
+                    const createdSprint = await addNewSprint(newSprint); // Agrega al servidor y devuelve el sprint creado
+                    addSprint(createdSprint); // Agrega al estado local solo una vez
                 } catch (error) {
                     console.error("Error al crear el Sprint:", error);
                 }
-                onClose();
             } else {
                 alert('Por favor, completa todos los campos.');
+                return;
             }
         }
+
+        setFormValues(initialState); // Limpia el formulario
+        onClose(); // Cierra el modal
+    };
+
+    const handleClose = () => {
+        setFormValues(initialState); // Limpia el formulario al cerrar el modal
+        setSelectedSprint(null); // Limpia el Sprint seleccionado
+        onClose();
     };
 
     return (
@@ -140,7 +148,7 @@ export const CrearSprintModal = ({ modalClass, onClose }: { modalClass: string; 
                 />
             </div>
             <div className="botonesModal">
-                <Button variant="danger" onClick={onClose}>
+                <Button variant="danger" onClick={handleClose}>
                     Cancelar
                 </Button>
                 <Button variant="success" type="submit">Guardar</Button>

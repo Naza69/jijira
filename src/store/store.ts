@@ -1,80 +1,97 @@
 import { create } from 'zustand';
-import { ISprint } from '../types/ISprint';
 import { ITarea } from '../types/ITarea';
+import { ISprint } from '../types/ISprint';
 
-export type Task = {
-    id: number;
-    title: string;
-    description: string;
-    dueDate: string;
-    status: 'pendiente' | 'backlog' | 'en progreso' | 'completado';
-};
+// --- TAREA STORE ---
 
-export type AppState = {
-    // Modal management
-    openModal: string | null;
-    setOpenModal: (modalName: string | null) => void;
-
-    // Sprint management
-    sprints: ISprint[];
-    selectedSprint: ISprint | null;
-    setSelectedSprint: (sprint: ISprint | null) => void;
-    setArraySprints: (sprints: ISprint[]) => void;
-    addSprint: (sprint: ISprint) => void;
-    updateSprint: (sprint: ISprint) => void;
-    removeSprint: (id: string) => void;
-
-    // Task management
+interface TareaState {
     tareas: ITarea[];
     activeTarea: ITarea | null;
+    setArrayTareas: (tareas: ITarea[]) => void;
     setActiveTarea: (tarea: ITarea | null) => void;
-    setArrayTareas: (arrayDeTareas: ITarea[]) => void;
     addNewTarea: (tarea: ITarea) => void;
-    editTarea: (updatedTarea: ITarea) => void;
-    deleteTarea: (idTarea: string) => void;
-};
+    editTarea: (tarea: ITarea) => void;
+    deleteTarea: (id: string) => void;
+}
 
-export const useAppStore = create<AppState>((set) => ({
-    // Modal management
-    openModal: null,
-    setOpenModal: (modalName) => set({ openModal: modalName }),
-
-    // Sprint management
-    sprints: [],
-    setArraySprints: (sprints) => set(() => ({ sprints })),
-    addSprint: (sprint) =>
-        set((state) => ({
-            sprints: [...state.sprints, sprint],
-        })),
-    updateSprint: (updatedSprint) =>
-        set((state) => ({
-            sprints: state.sprints.map((sprint) =>
-                sprint.id === updatedSprint.id ? { ...sprint, ...updatedSprint } : sprint
-            ),
-        })),
-    selectedSprint: null,
-    setSelectedSprint: (sprint) => set({ selectedSprint: sprint }),
-    removeSprint: (sprintId) =>
-        set((state) => ({
-            sprints: state.sprints.filter((sprint) => sprint.id !== sprintId),
-        })),
-
-    // Task management
+const useTareaStore = create<TareaState>((set) => ({
     tareas: [],
     activeTarea: null,
-    setActiveTarea: (tarea) => set(() => ({ activeTarea: tarea })),
-    setArrayTareas: (arrayDeTareas) => set(() => ({ tareas: arrayDeTareas })),
-    addNewTarea: (newTarea) =>
-        set((state) => ({ tareas: [...state.tareas, newTarea] })),
-    editTarea: (editedTarea) =>
+    setArrayTareas: (tareas) => set({ tareas }),
+    setActiveTarea: (tarea) => set({ activeTarea: tarea }),
+    addNewTarea: (tarea) =>
+        set((state) => ({ tareas: [...state.tareas, tarea] })),
+    editTarea: (tarea) =>
         set((state) => ({
-            tareas: state.tareas.map((tarea) =>
-                tarea.id === editedTarea.id ? { ...tarea, ...editedTarea } : tarea
-            ),
+            tareas: state.tareas.map((t) => (t.id === tarea.id ? tarea : t)),
         })),
-    deleteTarea: (idTarea) =>
+    deleteTarea: (id) =>
         set((state) => ({
-            tareas: state.tareas.filter((tarea) => tarea.id !== idTarea),
+            tareas: state.tareas.filter((t) => t.id !== id),
         })),
 }));
 
+// --- SPRINT STORE ---
+
+interface SprintState {
+    sprints: ISprint[];
+    selectedSprint: ISprint | null;
+    openModal: string | null; // Nueva propiedad para manejar el estado del modal
+    setArraySprints: (sprints: ISprint[]) => void;
+    setSelectedSprint: (sprint: ISprint | null) => void; // Asegúrate de que acepte `null`
+    setOpenModal: (modal: string | null) => void; // Nueva función para actualizar el estado del modal
+    addSprint: (sprint: ISprint) => void; // Agregar un nuevo sprint
+    updateSprint: (updatedSprint: ISprint) => void; // Actualizar un sprint existente
+    removeSprint: (id: string) => void; // Eliminar un sprint por ID
+}
+
+const useSprintStore = create<SprintState>((set) => ({
+    sprints: [],
+    selectedSprint: null,
+    openModal: null, // Estado inicial del modal
+    setArraySprints: (sprints) => {
+        console.log("Actualizando lista de sprints:", sprints);
+        set({ sprints });
+    },
+    setSelectedSprint: (sprint) => set({ selectedSprint: sprint }),
+    setOpenModal: (modal) => set({ openModal: modal }), // Implementación de la función
+    addSprint: (sprint) =>
+        set((state) => ({
+            sprints: state.sprints.some((s) => s.id === sprint.id)
+                ? state.sprints // Evita duplicados
+                : [...state.sprints, sprint],
+        })), // Agregar un nuevo sprint
+    updateSprint: (updatedSprint) => {
+        console.log("Actualizando sprint:", updatedSprint);
+        set((state) => {
+            const sprintsActualizados = state.sprints.map((sprint) =>
+                sprint.id === updatedSprint.id ? updatedSprint : sprint
+            );
+            return { sprints: sprintsActualizados, selectedSprint: updatedSprint };
+        });
+    }, // Actualizar un sprint existente
+    removeSprint: (id) =>
+        set((state) => ({
+            sprints: state.sprints.filter((sprint) => sprint.id !== id),
+        })), // Eliminar un sprint por ID
+}));
+
+// --- BACKLOG STORE ---
+
+interface BacklogState {
+    backlog: ITarea[];
+    setBacklog: (tareas: ITarea[]) => void;
+}
+
+const useBacklogStore = create<BacklogState>((set) => ({
+    backlog: [],
+    setBacklog: (tareas) => set({ backlog: tareas }),
+}));
+
+// --- EXPORTACIÓN UNIFICADA ---
+
+export {
+    useTareaStore,
+    useSprintStore,
+    useBacklogStore // Exportamos el nuevo store
+};

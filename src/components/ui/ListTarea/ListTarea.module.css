@@ -38,3 +38,46 @@
     position: fixed;
     z-index: 20;
 }
+
+.headerBacklog {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 24px;
+    gap: 10px;
+}
+
+.headerActions {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 10px;
+}
+
+.btnVolver, .btnCrear {
+    padding: 10px 24px;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.btnVolver {
+    background: #e0e0e0;
+    color: #333;
+}
+
+.btnVolver:hover {
+    background: #bdbdbd;
+}
+
+.btnCrear {
+    background: #36dcf1;
+    color: #fff;
+}
+
+.btnCrear:hover {
+    background: #1bb6d6;
+}
+

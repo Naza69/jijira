@@ -18,8 +18,6 @@ export const Backlog = () => {
   }, []);
   return (
     <div>
-      <h1>Pantalla Backlog</h1>
-      <button onClick={() => navigate('/nueva-pantalla')}>Ir a Nueva Pantalla</button>
       <ListTarea />
     </div>
   )

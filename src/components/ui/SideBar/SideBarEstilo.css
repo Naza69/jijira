@@ -1,4 +1,4 @@
-.asideBarContenedor {
+.sideBarContenedor {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 60px 2fr 1fr 50px auto;
@@ -46,20 +46,21 @@
     background: #555;
 }
 
-.botonBlacklog {
+.botonBacklog {
     height: 40px;
     width: 150px;
     border-radius: 20px;
     border: none;
     background-color: rgb(206, 252, 99);
+    color: black;
 }
 
-.botonBlacklog:hover {
+.botonBacklog:hover {
     background-color: rgb(150, 200, 50);
     cursor: pointer;
 }
 
-.botonBlacklog:active {
+.botonBacklog:active {
     background-color: rgb(100, 150, 30);
     transform: scale(0.95);
 }

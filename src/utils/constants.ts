@@ -1,1 +1,1 @@
-export const API_URL = "http://localhost:3000"; // Asegúrate de que esta URL sea correcta
+export const API_URL = "http://localhost:3000";

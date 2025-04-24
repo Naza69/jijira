@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import styles from "./VerSprintModal.module.css";
 import { ISprint } from '../../../../types/ISprint';
-import { useAppStore } from '../../../../store/store';
+import { useSprintStore } from '../../../../store/store';
 import { Button } from 'react-bootstrap';
 
 type VerSprintModalProps = {
@@ -10,8 +10,8 @@ type VerSprintModalProps = {
 };
 
 export const VerSprintModal: FC<VerSprintModalProps> = ({ modalClass, handleCloseVerSprintModal }) => {
-    const activeSprint: ISprint | null = useAppStore((state) => state.selectedSprint);
-    const setActiveSprint = useAppStore((state) => state.setSelectedSprint);
+    const activeSprint: ISprint | null = useSprintStore((state) => state.selectedSprint);
+    const setActiveSprint = useSprintStore((state) => state.setSelectedSprint);
 
     const handleClose = () => {
         setActiveSprint(null);

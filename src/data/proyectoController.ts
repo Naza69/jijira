@@ -1,90 +1,124 @@
 import axios from "axios";
 import { ITarea } from "../types/ITarea";
 import { API_URL } from '../utils/constants';
-import { backlogPut } from "../http/backlogPut";
-import Swal from "sweetalert2";
 import { ISprint } from "../types/ISprint";
 
 export const getTareaController = async (): Promise<ITarea[]> => {
 	try {
-		const response = await axios.get<ITarea[]>(`${API_URL}/tareas`);
-		return response.data || []; // Devuelve un array vacío si no hay tareas
+		const response = await axios.get<{ tareas: ITarea[] }>(`${API_URL}/backlog`);
+		return response.data.tareas || []; // Devuelve las tareas del backlog
 	} catch (error) {
-		console.error("Ocurrió un error con getTareaController:", error);
-		return [];
+		console.error("Error en getTareaController:", error);
+		throw new Error("No se pudieron obtener las tareas del backlog.");
 	}
 };
 
-export const createTareaController = async (newTarea: ITarea) => {
+export const createTareaController = async (newTarea: ITarea): Promise<ITarea> => {
 	try {
-		const response = await axios.post<ITarea>(`${API_URL}/tareas`, newTarea);
-		return response.data;
+		const response = await axios.get<{ tareas: ITarea[] }>(`${API_URL}/backlog`);
+		const tareas = response.data.tareas || [];
+		const updatedTareas = [...tareas, newTarea];
+		await axios.put(`${API_URL}/backlog`, { tareas: updatedTareas }); // Actualizamos todo el backlog
+		return newTarea;
 	} catch (error) {
-		console.error("Ocurrió un error en createTareaController:", error);
-		throw error;
+		console.error("Error en createTareaController:", error);
+		throw new Error("No se pudo crear la tarea.");
 	}
 };
 
-export const updateTareaController = async (updatedTarea: ITarea) => {
+export const updateTareaController = async (updatedTarea: ITarea): Promise<void> => {
 	try {
-		const tareasDB = await getTareaController();
-		if (tareasDB) {
-			const result = tareasDB.map((tareasDB) =>
-				tareasDB.id === updatedTarea.id ? { ...tareasDB, ...updatedTarea } : tareasDB
-			);
-			await backlogPut(result);
-		}
+		const response = await axios.get<{ tareas: ITarea[] }>(`${API_URL}/backlog`);
+		const tareas = response.data.tareas || [];
+		const updatedTareas = tareas.map((tarea) =>
+			tarea.id === updatedTarea.id ? updatedTarea : tarea
+		);
+		await axios.put(`${API_URL}/backlog`, { tareas: updatedTareas }); // Actualizamos todo el backlog
 	} catch (error) {
 		console.error("Error en updateTareaController:", error);
+		throw new Error("No se pudo actualizar la tarea.");
 	}
 };
 
-export const deleteTareaController = async (idDeletedTarea: string) => {
+export const deleteTareaController = async (idDeletedTarea: string): Promise<void> => {
 	try {
-		// Realiza una solicitud DELETE al servidor para eliminar la tarea
-		await axios.delete(`${API_URL}/tareas/${idDeletedTarea}`);
+		const response = await axios.get<{ tareas: ITarea[] }>(`${API_URL}/backlog`);
+		const tareas = response.data.tareas || [];
+		const updatedTareas = tareas.filter((tarea) => tarea.id !== idDeletedTarea);
+		await axios.put(`${API_URL}/backlog`, { tareas: updatedTareas }); // Actualizamos todo el backlog
 	} catch (error) {
 		console.error("Error en deleteTareaController:", error);
-		throw error; // Lanza el error para manejarlo en el nivel superior si es necesario
+		throw new Error("No se pudo eliminar la tarea.");
 	}
 };
 
 export const getSprintController = async (): Promise<ISprint[]> => {
 	try {
-		const response = await axios.get<ISprint[]>(`${API_URL}/sprints`);
-		return response.data || []; // Devuelve un array vacío si no hay sprints
+		const response = await axios.get<{ sprints: ISprint[] }>(`${API_URL}/sprintList`);
+		return response.data.sprints || []; // Devuelve los sprints
 	} catch (error) {
-		console.error("Ocurrió un error con getSprintController:", error);
-		return [];
+		console.error("Error en getSprintController:", error);
+		throw new Error("No se pudieron obtener los sprints.");
 	}
 };
 
-export const createSprintController = async (newSprint: ISprint) => {
+export const createSprintController = async (newSprint: ISprint): Promise<ISprint> => {
 	try {
-		const response = await axios.post<{ sprints: ISprint[] }>(`${API_URL}/sprints`, newSprint);
-		return response.data;
+		const response = await axios.get<{ sprints: ISprint[] }>(`${API_URL}/sprintList`);
+		const sprints = response.data.sprints || [];
+		const updatedSprints = [...sprints, newSprint];
+		await axios.put(`${API_URL}/sprintList`, { sprints: updatedSprints }); // Actualizamos toda la lista de sprints
+		return newSprint;
 	} catch (error) {
-		console.error("Ocurrió un error en createSprintController:", error);
-		throw error;
+		console.error("Error en createSprintController:", error);
+		throw new Error("No se pudo crear el sprint.");
 	}
 };
 
-export const updateSprintController = async (updatedSprint: ISprint) => {
+export const updateSprintController = async (updatedSprint: ISprint): Promise<void> => {
 	try {
-		const response = await axios.put(`${API_URL}/sprints/${updatedSprint.id}`, updatedSprint);
-		return response.data;
+		const response = await axios.get<{ sprints: ISprint[] }>(`${API_URL}/sprintList`);
+		const sprints = response.data.sprints || [];
+		const updatedSprints = sprints.map((sprint) =>
+			sprint.id === updatedSprint.id ? updatedSprint : sprint
+		);
+		await axios.put(`${API_URL}/sprintList`, { sprints: updatedSprints }); // Actualizamos toda la lista de sprints
 	} catch (error) {
-		console.error("Ocurrió un error en updateSprintController:", error);
-		throw error;
+		console.error("Error en updateSprintController:", error);
+		throw new Error("No se pudo actualizar el sprint.");
 	}
 };
 
-export const deleteSprintController = async (idSprintToDelete: string) => {
+export const deleteSprintController = async (idSprintToDelete: string): Promise<void> => {
 	try {
-		const response = await axios.delete(`${API_URL}/sprints/${idSprintToDelete}`);
-		return response.data;
+		const response = await axios.get<{ sprints: ISprint[] }>(`${API_URL}/sprintList`);
+		const sprints = response.data.sprints || [];
+		const updatedSprints = sprints.filter((sprint) => sprint.id !== idSprintToDelete);
+		await axios.put(`${API_URL}/sprintList`, { sprints: updatedSprints }); // Actualizamos toda la lista de sprints
 	} catch (error) {
-		console.error("Ocurrió un error en deleteSprintController:", error);
-		throw error;
+		console.error("Error en deleteSprintController:", error);
+		throw new Error("No se pudo eliminar el sprint.");
+	}
+};
+
+export const updateTareaInSprintController = async (sprintId: string, updatedTarea: ITarea): Promise<void> => {
+	try {
+		const response = await axios.get<{ sprints: ISprint[] }>(`${API_URL}/sprintList`);
+		const sprints = response.data.sprints || [];
+		const updatedSprints = sprints.map((sprint) => {
+			if (sprint.id === sprintId) {
+				return {
+					...sprint,
+					tareas: sprint.tareas.map((tarea) =>
+						tarea.id === updatedTarea.id ? updatedTarea : tarea
+					),
+				};
+			}
+			return sprint;
+		});
+		await axios.put(`${API_URL}/sprintList`, { sprints: updatedSprints });
+	} catch (error) {
+		console.error("Error en updateTareaInSprintController:", error);
+		throw new Error("No se pudo actualizar la tarea en el sprint.");
 	}
 };

@@ -1,89 +1,109 @@
-import { TareaStore } from "../../store/TareaStore"
-import { createTareaController, getTareaController, updateTareaController, deleteTareaController } from "../../data/proyectoController"
-import { ITarea } from "../../types/ITarea"
-import { useShallow } from "zustand/shallow"
-import Swal from "sweetalert2"
+import { useTareaStore, useBacklogStore } from "../../store/store";
+import { createTareaController, getTareaController, updateTareaController, deleteTareaController } from "../../data/proyectoController";
+import { ITarea } from "../../types/ITarea";
+import Swal from "sweetalert2";
+import { useEffect } from "react";
 
 export const useTarea = () => {
+    const tareas = useTareaStore((state) => state.tareas);
+    const setArrayTareas = useTareaStore((state) => state.setArrayTareas);
+    const addNewTarea = useTareaStore((state) => state.addNewTarea);
+    const deleteTarea = useTareaStore((state) => state.deleteTarea);
+    const editTarea = useTareaStore((state) => state.editTarea);
 
-    const { tareas, setArrayTareas, addNewTarea, deleteTarea, editTarea } = TareaStore(
-        useShallow((state) => ({
-            tareas: state.tareas,
-            setArrayTareas: state.setArrayTareas,
-            addNewTarea: state.addNewTarea,
-            editTarea: state.editTarea,
-            deleteTarea: state.deleteTarea
-        }))
-    )
+    const backlog = useBacklogStore((state) => state.backlog);
+    const setBacklog = useBacklogStore((state) => state.setBacklog);
 
     const getTareas = async () => {
-        const data = await getTareaController();
-        if (data) {
-            setArrayTareas(data);
+        try {
+            const data = await getTareaController();
+            setBacklog(data); // Actualiza el backlog
+        } catch (error) {
+            console.error("Error en getTareas:", error);
         }
     };
+
+    useEffect(() => {
+        getTareas(); // Llama a getTareas solo una vez al montar el componente
+    }, []); // Dependencias vacías para evitar bucles infinitos
 
     const addTarea = async (newTarea: ITarea) => {
-        addNewTarea(newTarea);
         try {
-            await createTareaController(newTarea);
+            const createdTarea = await createTareaController(newTarea);
+            setBacklog([...backlog, createdTarea]); // Actualizamos el estado local inmediatamente
         } catch (error) {
-            deleteTarea(newTarea.id!);
-            console.error("Error en addNewTask:", error);
+            console.error("Error en addTarea:", error);
         }
     };
-    const updateExistingTarea = async (updatedTarea: ITarea) => {
-        const previuosTarea = tareas.find((el) => el.id === updatedTarea.id)
-        if (previuosTarea) {
-            editTarea(updatedTarea)
-            try {
-                await updateTareaController(updatedTarea);
 
+    const updateExistingTarea = async (updatedTarea: ITarea) => {
+        const previousTarea = backlog.find((el) => el.id === updatedTarea.id); // Usamos backlog en lugar de tareas
+        if (previousTarea) {
+            const updatedBacklog = backlog.map((tarea) =>
+                tarea.id === updatedTarea.id ? updatedTarea : tarea
+            );
+            setBacklog(updatedBacklog); // Actualizamos el estado localmente
+            try {
+                await updateTareaController(updatedTarea); // Intentamos actualizar en el servidor
             } catch (error) {
-                editTarea(previuosTarea)
-                console.error("Error en updateExistingTarea", error)
+                setBacklog(backlog); // Revertimos al estado anterior en caso de error
+                console.error("Error en updateExistingTarea:", error);
+                Swal.fire({
+                    title: "Error",
+                    text: "No se pudo actualizar la tarea. Por favor, inténtalo de nuevo.",
+                    icon: "error",
+                    confirmButtonText: "Aceptar",
+                });
             }
+        } else {
+            console.warn("Tarea no encontrada para actualizar.");
         }
-    }
+    };
 
     const deleteExistingTarea = async (idTareaToDelete: string) => {
-        const previuosTarea = tareas.find((tarea) => tarea.id === idTareaToDelete)
+        const previousTarea = backlog.find((tarea) => tarea.id === idTareaToDelete); // Usamos backlog en lugar de tareas
 
         Swal.fire({
-            title: "Are fucking sure bruh?",
-            text: "Posta?",
+            title: "¿Estas seguro?",
+            text: "Esta acción no se puede deshacer.",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: "#193888d",
-            cancelButtonColor: "#09398hg",
-            confirmButtonText: "Nismearlo",
-            cancelButtonText: "Achicarse"
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Eliminar",
+            cancelButtonText: "Cancelar",
         }).then(async (result) => {
             if (result.isConfirmed) {
-                if (previuosTarea) {
-                    deleteTarea(idTareaToDelete)
+                if (previousTarea) {
+                    const updatedBacklog = backlog.filter((tarea) => tarea.id !== idTareaToDelete);
+                    setBacklog(updatedBacklog); // Actualizamos el estado local inmediatamente
                     try {
-                        await deleteTareaController(idTareaToDelete);
+                        await deleteTareaController(idTareaToDelete); // Eliminamos en el servidor
                     } catch (error) {
-                        addTarea(previuosTarea)
-                        console.error("Hubo un error en deleteExistingTarea", error)
+                        setBacklog(backlog); // Revertimos al estado anterior en caso de error
+                        console.error("Error en deleteExistingTarea:", error);
+                        Swal.fire({
+                            title: "Error",
+                            text: "No se pudo eliminar la tarea. Por favor, inténtalo de nuevo.",
+                            icon: "error",
+                            confirmButtonText: "Aceptar",
+                        });
                     }
                 }
-                //Esto creo que esta mal, avisa que fue eliminada la tarea aun si el try dio error
                 Swal.fire({
                     title: "Eliminado!",
                     text: "Tu tarea fue eliminada.",
                     icon: "success",
                 });
             }
+        });
+    };
 
-        })
-    }
     return {
-        tareas,
+        backlog,
         getTareas,
         addTarea,
         updateExistingTarea,
-        deleteExistingTarea
-    }
-}
+        deleteExistingTarea,
+    };
+};

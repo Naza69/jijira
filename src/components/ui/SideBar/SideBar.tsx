@@ -1,19 +1,19 @@
 import React, { useEffect } from 'react';
-import "./AsaidBarEstilo.css";
+import "./SideBarEstilo.css";
 import { useNavigate } from 'react-router-dom';
-import { useAppStore } from '../../../store/store';
+import { useSprintStore } from '../../../store/store';
 import addBoxIcon from '../../icons/add_box.svg';
-import { CardSprintAsaid } from '../CardSprintAsaid/CardSprintAsaid';
+import { CardSprintSide } from '../CardSprintSide/CardSprintSide';
 import { CrearSprintModal } from '../modals/CrearSprint/CrearSprintModal';
 import { VerSprintModal } from '../modals/VerSprintModal/VerSprintModal';
 import { ISprint } from '../../../types/ISprint';
 
-export const AsaidBar = () => {
+export const SideBar = () => {
     const navigate = useNavigate();
-    const sprints = useAppStore((state) => state.sprints);
-    const openModal = useAppStore((state) => state.openModal);
-    const setOpenModal = useAppStore((state) => state.setOpenModal);
-    const setSelectedSprint = useAppStore((state) => state.setSelectedSprint);
+    const sprints = useSprintStore((state) => state.sprints);
+    const openModal = useSprintStore((state) => state.openModal);
+    const setOpenModal = useSprintStore((state) => state.setOpenModal);
+    const setSelectedSprint = useSprintStore((state) => state.setSelectedSprint);
 
     useEffect(() => {
         if (openModal) {
@@ -38,14 +38,14 @@ export const AsaidBar = () => {
     };
 
     const handleCloseModal = () => {
-        setOpenModal(null);
-        setSelectedSprint(null);
+        setOpenModal(null); // Asegúrate de que `setOpenModal` esté definido en el estado
+        setSelectedSprint(null); // Asegúrate de que `setSelectedSprint` esté definido en el estado
     };
 
     return (
-        <div className='asideBarContenedor'>
+        <div className='sideBarContenedor'>
             <div className='botoneraBacklog'>
-                <button className='botonBlacklog' onClick={() => navigate('/backlog')}>
+                <button className='botonBacklog' onClick={() => navigate('/')}>
                     <h6>Backlog</h6>
                 </button>
             </div>
@@ -60,7 +60,7 @@ export const AsaidBar = () => {
                     <p>No hay sprints creados.</p>
                 ) : (
                     sprints.map((sprint) => (
-                        <CardSprintAsaid
+                        <CardSprintSide
                             key={sprint.id}
                             sprint={sprint}
                             handleOpenModalEditSprints={handleOpenModalEditSprints}
