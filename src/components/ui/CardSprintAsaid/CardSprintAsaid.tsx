@@ -11,46 +11,46 @@ import { useSprint } from '../../hooks/useSprint'; // Importar el hook de Sprint
 interface CardSprintAsaidProps {
     sprint: ISprint;
     handleOpenModalEditSprints: (sprint: ISprint) => void;
-    handleOpenModalVerSprints: (sprint: ISprint) => void; // Función para cerrar el modal de ver sprint
+    handleOpenModalVerSprints: (sprint: ISprint) => void;
 }
 
 export const CardSprintAsaid: React.FC<CardSprintAsaidProps> = ({ sprint, handleOpenModalEditSprints, handleOpenModalVerSprints }) => {
     const setSelectedSprint = useAppStore((state) => state.setSelectedSprint);
     const setOpenModal = useAppStore((state) => state.setOpenModal);
     const removeSprint = useAppStore((state) => state.removeSprint);
-    const { deleteExistingSprint } = useSprint(); // Usar la función de eliminación del hook
+    const { deleteExistingSprint } = useSprint();
 
     const handleViewSprint = () => {
-        console.log('Abriendo modal VerSprint:', sprint); // Verifica que el sprint sea el correcto
+        console.log('Abriendo modal VerSprint:', sprint);
         setSelectedSprint(sprint);
-        handleOpenModalVerSprints(sprint); // Abre el modal de ver sprint
-        setOpenModal('verSprint'); // Cambia el estado global `openModal` a 'verSprint'
+        handleOpenModalVerSprints(sprint);
+        setOpenModal('verSprint');
     };
 
     const handleEditSprint = () => {
-        setSelectedSprint(sprint); // Selecciona el Sprint
-        handleOpenModalEditSprints(sprint) // Abre el modal de edición
+        setSelectedSprint(sprint);
+        handleOpenModalEditSprints(sprint)
     };
 
     const handleDeleteSprint = () => {
-        deleteExistingSprint(sprint.id); // Llamar directamente al hook para eliminar
+        deleteExistingSprint(sprint.id);
     };
 
     const handleSelectSprint = () => {
-        setSelectedSprint(sprint); // Selecciona el Sprint
+        setSelectedSprint(sprint);
     };
 
     return (
         <div
             className="cardSprintAsaidContenedor"
-            onClick={handleSelectSprint} // Agrega el evento onClick al contenedor principal
+            onClick={handleSelectSprint}
         >
             <div>
                 <h5>{sprint.title}</h5>
                 <h6>Inicio: {new Date(sprint.startDate).toLocaleDateString()}</h6>
                 <h6>Fin: {new Date(sprint.endDate).toLocaleDateString()}</h6>
             </div>
-            <div className="botoneraCardSprint" onClick={(e) => e.stopPropagation() /* HACE QUE SELECCIONE EL SPRINT AL HACER CLICK EN EL CUADRO EN UN AREA CUALQUIERA. NO BORRAR MUY IMPORTANTE*/}>
+            <div className="botoneraCardSprint" onClick={(e) => e.stopPropagation()}>
                 <button className="botonCardVerSprint" onClick={handleViewSprint}>
                     <img src={visibilityIcon} alt="Ver Sprint" />
                 </button>

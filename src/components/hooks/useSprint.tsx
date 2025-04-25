@@ -19,7 +19,7 @@ export const useSprint = () => {
     const addNewSprint = async (newSprint: ISprint): Promise<ISprint> => {
         try {
             const createdSprint = await createSprintController(newSprint) as unknown as ISprint;
-            return createdSprint; // Devuelve el sprint creado
+            return createdSprint;
         } catch (error) {
             console.error("Error en addNewSprint:", error);
             throw error;
@@ -33,7 +33,7 @@ export const useSprint = () => {
             try {
                 await updateSprintController(updatedSprint);
             } catch (error) {
-                updateSprint(previousSprint); // Revertimos al estado anterior
+                updateSprint(previousSprint);
                 console.error("Error en updateExistingSprint:", error);
                 Swal.fire({
                     title: "Error",
@@ -82,9 +82,9 @@ export const useSprint = () => {
                     t.id === updatedTarea.id ? updatedTarea : t
                 ),
             };
-            updateSprint(updatedSprint); // Actualiza el estado local
+            updateSprint(updatedSprint);
             try {
-                await updateTareaInSprintController(sprintId, updatedTarea); // Actualiza en el servidor
+                await updateTareaInSprintController(sprintId, updatedTarea);
             } catch (error) {
                 console.error("Error en updateTareaInSprint:", error);
                 Swal.fire({

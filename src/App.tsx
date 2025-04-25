@@ -1,4 +1,3 @@
-//importamcion de librerias
 import './App.css'
 import { Backlog } from './components/screens/Backlog'
 import { SideBar } from './components/ui/SideBar/SideBar'
@@ -9,40 +8,28 @@ import { NuevaPantalla } from './components/screens/NuevaPantalla'
 import { useAppStore } from './store/SprintStore'
 import { ISprint } from './types/ISprint'
 import { useSprintStore } from './store/store'
+import { ErrorPage } from './components/screens/ErrorPage'
 
 function App() {
+  const addSprint = useSprintStore((state) => state.addSprint)
 
-  const addSprint = useSprintStore((state) => state.addSprint);
-
- // useEffect(() => {
- //   // Carga los sprints desde json-server
- //   fetch('http://localhost:3000/sprintList/') // Asegurate de que esté corriendo el json-server
- //     .then(res => res.json())
- //     .then(data => {
- //       if (data?.sprints) {
- //         data.sprints.forEach((sprint: ISprint) => addSprint(sprint));
- //       }
- //     })
- //     .catch(err => console.error("Error cargando sprints:", err));
- // }, [addSprint]);
- 
   useEffect(() => {
     fetch('http://localhost:3000/sprintList')
       .then(res => {
-        if (!res.ok) throw new Error("Error de red");
-        return res.json();
+        if (!res.ok) throw new Error("Error de red")
+        return res.json()
       })
       .then((data) => {
-        const sprints = data.sprints;
+        const sprints = data.sprints
         if (Array.isArray(sprints)) {
-          sprints.forEach(addSprint);
-          console.log("Sprints cargados:", sprints);
+          sprints.forEach(addSprint)
+          console.log("Sprints cargados:", sprints)
         } else {
-          console.error("La propiedad 'sprints' no es un array");
+          console.error("La propiedad 'sprints' no es un array")
         }
       })
-      .catch(err => console.error("Error cargando sprints:", err));
-  }, [addSprint]);
+      .catch(err => console.error("Error cargando sprints:", err))
+  }, [addSprint])
 
   return (
     <Router>
@@ -54,6 +41,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Backlog />} />
             <Route path="/nueva-pantalla/:idSprint" element={<NuevaPantalla />} />
+            <Route path="/error" element={<ErrorPage />} />
           </Routes>
         </div>
         <div className='sideBar'>

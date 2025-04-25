@@ -13,7 +13,7 @@ export const Backlog = () => {
   const { sprints, getSprints, addNewSprint, updateExistingSprint, deleteExistingSprint } = useSprint();
   useEffect(() => {
     getSprints().then(() => {
-      console.log("Estado de sprints después de getSprints:", sprints); // Log para verificar el estado
+      console.log("Estado de sprints después de getSprints:", sprints);
     });
   }, []);
   return (

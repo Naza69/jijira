@@ -1,40 +1,46 @@
 {
   "backlog": {
-    "tareas": [
-      {
-        "id": "1745494779492",
-        "titulo": "tests",
-        "descripcion": "233",
-        "fechaLimite": "2002-02-23",
-        "estado": "backlog"
-      }
-    ]
+    "tareas": []
   },
   "sprintList": {
     "sprints": [
       {
-        "id": "1745494793789",
-        "title": "Hola",
-        "description": "Test",
-        "startDate": "0003-02-23",
-        "endDate": "0003-02-23",
-        "tareas": [
-          {
-            "titulo": "test2",
-            "descripcion": "pepe",
-            "fechaLimite": "0022-02-02",
-            "estado": "pendiente",
-            "id": "1745494858479"
-          }
-        ]
+        "id": "1745539241544",
+        "title": "sprint test 1",
+        "description": "sprint test 1",
+        "startDate": "0232-03-23",
+        "endDate": "0332-02-02",
+        "tareas": []
       },
       {
-        "id": "1745496886989",
-        "title": "askdjbdak",
-        "description": "asjkdbakjs",
-        "startDate": "2005-12-03",
-        "endDate": "2050-12-09",
-        "tareas": []
+        "id": "1745539255425",
+        "title": "sprint test 2",
+        "description": "sprint test 2",
+        "startDate": "0212-12-23",
+        "endDate": "0002-03-02",
+        "tareas": [
+          {
+            "titulo": "tarea test 2",
+            "descripcion": "tarea test 2",
+            "fechaLimite": "0231-03-12",
+            "estado": "pendiente",
+            "id": "1745539197462"
+          },
+          {
+            "id": "1745539189366",
+            "titulo": "coso poco",
+            "descripcion": "tarea test 1",
+            "fechaLimite": "0223-03-31",
+            "estado": "en_progreso"
+          },
+          {
+            "titulo": "sprinssst test 1 23",
+            "descripcion": "sad",
+            "fechaLimite": "0123-03-12",
+            "estado": "pendiente",
+            "id": "1745539315431"
+          }
+        ]
       }
     ]
   }

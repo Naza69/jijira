@@ -17,36 +17,36 @@ export const useTarea = () => {
     const getTareas = async () => {
         try {
             const data = await getTareaController();
-            setBacklog(data); // Actualiza el backlog
+            setBacklog(data);
         } catch (error) {
             console.error("Error en getTareas:", error);
         }
     };
 
     useEffect(() => {
-        getTareas(); // Llama a getTareas solo una vez al montar el componente
-    }, []); // Dependencias vacías para evitar bucles infinitos
+        getTareas();
+    }, []);
 
     const addTarea = async (newTarea: ITarea) => {
         try {
             const createdTarea = await createTareaController(newTarea);
-            setBacklog([...backlog, createdTarea]); // Actualizamos el estado local inmediatamente
+            setBacklog([...backlog, createdTarea]);
         } catch (error) {
             console.error("Error en addTarea:", error);
         }
     };
 
     const updateExistingTarea = async (updatedTarea: ITarea) => {
-        const previousTarea = backlog.find((el) => el.id === updatedTarea.id); // Usamos backlog en lugar de tareas
+        const previousTarea = backlog.find((el) => el.id === updatedTarea.id);
         if (previousTarea) {
             const updatedBacklog = backlog.map((tarea) =>
                 tarea.id === updatedTarea.id ? updatedTarea : tarea
             );
-            setBacklog(updatedBacklog); // Actualizamos el estado localmente
+            setBacklog(updatedBacklog);
             try {
-                await updateTareaController(updatedTarea); // Intentamos actualizar en el servidor
+                await updateTareaController(updatedTarea);
             } catch (error) {
-                setBacklog(backlog); // Revertimos al estado anterior en caso de error
+                setBacklog(backlog);
                 console.error("Error en updateExistingTarea:", error);
                 Swal.fire({
                     title: "Error",
@@ -61,8 +61,7 @@ export const useTarea = () => {
     };
 
     const deleteExistingTarea = async (idTareaToDelete: string) => {
-        const previousTarea = backlog.find((tarea) => tarea.id === idTareaToDelete); // Usamos backlog en lugar de tareas
-
+        const previousTarea = backlog.find((tarea) => tarea.id === idTareaToDelete);
         Swal.fire({
             title: "¿Estas seguro?",
             text: "Esta acción no se puede deshacer.",
@@ -76,11 +75,11 @@ export const useTarea = () => {
             if (result.isConfirmed) {
                 if (previousTarea) {
                     const updatedBacklog = backlog.filter((tarea) => tarea.id !== idTareaToDelete);
-                    setBacklog(updatedBacklog); // Actualizamos el estado local inmediatamente
+                    setBacklog(updatedBacklog);
                     try {
-                        await deleteTareaController(idTareaToDelete); // Eliminamos en el servidor
+                        await deleteTareaController(idTareaToDelete);
                     } catch (error) {
-                        setBacklog(backlog); // Revertimos al estado anterior en caso de error
+                        setBacklog(backlog);
                         console.error("Error en deleteExistingTarea:", error);
                         Swal.fire({
                             title: "Error",

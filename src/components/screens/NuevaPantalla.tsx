@@ -3,70 +3,36 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "./SprintsEstilo.css";
 import { useSprintStore } from '../../store/store';
 import { TaskCard } from '../ui/TaskCard/TaskCard';
-import { CrearSprintModal } from '../ui/modals/CrearSprint/CrearSprintModal';
 import { CrearTareaModal } from '../ui/modals/CrearTareaModal/CrearTareaModal';
 import { VerTareaModal } from '../ui/modals/VerTareaModal/VerTareaModal';
-import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 export function NuevaPantalla() {
     const openModal = useSprintStore((state) => state.openModal);
     const setOpenModal = useSprintStore((state) => state.setOpenModal);
     const selectedSprint = useSprintStore((state) => state.selectedSprint);
+    const setSelectedSprint = useSprintStore((state) => state.setSelectedSprint);
+    const sprints = useSprintStore((state) => state.sprints);
     const [openCrearTareaModal, setOpenCrearTareaModal] = useState(false);
-
-    //const selectedSprintTwo = useAppStore((state) => state.selectedSprint)
-    const navigate = useNavigate()
-    const {idSprint} = useParams()
-    console.log(idSprint)
-    const setSelectedSprint = useSprintStore((state) => state.setSelectedSprint)
-    const sprints = useSprintStore((state) => state.sprints)
+    const { idSprint } = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
-        if (openModal) {
-            document.body.classList.add('overflow-hidden');
-        } else {
-            document.body.classList.remove('overflow-hidden');
-        }
-    }, [openModal]);
-
-    //useEffect(() => {
-    //    if(!selectedSprint && idSprint && sprints.length > 0) {
-    //        const sprint = sprints.find((s) => String(s.id) === idSprint)
-    //        if(sprint) {
-    //            setSelectedSprint(sprint)
-    //        }
-    //    }
-    //}, [idSprint, selectedSprint, sprints, setSelectedSprint])
-    
-    useEffect(() => {
-        console.log("Checking for sprint with ID:", idSprint, "in", sprints);
-        const fetchSprint = async () =>{
-            
         if (idSprint && sprints.length > 0) {
-            console.log("🔄 Buscando sprint con ID:", idSprint);
             const sprint = sprints.find((s) => String(s.id) === idSprint);
-            console.log(sprint)
             if (sprint) {
-                console.log("✅ Sprint encontrado:", sprint);
-            
-
-                    setSelectedSprint(sprint);
-                    console.log(selectedSprint) //ACA PUEDE ESTAR EL PROBLEMA
+                setSelectedSprint(sprint);
             } else {
-                console.warn("No sprint encontrado con ese ID");
-            } 
+                console.warn("No se encontró un sprint con el ID:", idSprint);
+                navigate("/error");
+            }
         }
-        }
-        if (idSprint ){
-            fetchSprint()
-        }
-    }, [idSprint]);
+    }, [idSprint, sprints, setSelectedSprint, navigate]);
 
     return (
         <>
             <div className="pantallaPrincipal">
-                {selectedSprint! ? (
+                {selectedSprint ? (
                     <div className="sprintDetails">
                         <div className="headerSprintDetails">
                             <h2>Nombre de la Sprint: {selectedSprint.title}</h2>
@@ -83,8 +49,8 @@ export function NuevaPantalla() {
                         <div className="columnsContainer">
                             <div className="column pendiente">
                                 <h4>Pendiente</h4>
-                                {selectedSprint?.tareas
-                                    ?.filter((tarea) => tarea.estado === "pendiente")
+                                {selectedSprint.tareas
+                                    .filter((tarea) => tarea.estado === "pendiente")
                                     .map((tarea) => (
                                         <TaskCard
                                             key={tarea.id}
@@ -100,8 +66,8 @@ export function NuevaPantalla() {
                             </div>
                             <div className="column enProgreso">
                                 <h4>En progreso</h4>
-                                {selectedSprint?.tareas
-                                    ?.filter((tarea) => tarea.estado === "en_progreso")
+                                {selectedSprint.tareas
+                                    .filter((tarea) => tarea.estado === "en_progreso")
                                     .map((tarea) => (
                                         <TaskCard
                                             key={tarea.id}
@@ -117,8 +83,8 @@ export function NuevaPantalla() {
                             </div>
                             <div className="column completado">
                                 <h4>Completado</h4>
-                                {selectedSprint?.tareas
-                                    ?.filter((tarea) => tarea.estado === "completado")
+                                {selectedSprint.tareas
+                                    .filter((tarea) => tarea.estado === "completado")
                                     .map((tarea) => (
                                         <TaskCard
                                             key={tarea.id}
